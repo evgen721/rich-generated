@@ -351,24 +351,55 @@ break;
                 alert('Нет сгенерированного HTML для копирования.');
             }
         });
-		function openImagePreview(url) {
+document.addEventListener('DOMContentLoaded', function () {
+    // Назначаем обработчик события на кнопку закрытия
+    document.getElementById('closemodal').addEventListener('click', closeImagePreview);
+
+    // Закрытие модального окна при клике вне области модалки
+    document.getElementById('image-preview-overlay').addEventListener('click', function (event) {
+        if (event.target === this) { // Проверяем, что клик был именно по оверлею
+            closeImagePreview();
+        }
+    });
+});
+
+function openImagePreview(url) {
     if (!url.trim()) {
         alert('URL изображения не заполнен.');
         return;
     }
-	function closeImagePreview() {
+
+    const previewedImage = document.getElementById('previewed-image');
+    const imageInfo = document.getElementById('image-info');
+
+    // Загружаем изображение
+    previewedImage.src = url;
+
+    // Обработчик события, который срабатывает, когда изображение загружено
+    previewedImage.onload = function () {
+        // Получаем размеры изображения
+        const width = previewedImage.naturalWidth;
+        const height = previewedImage.naturalHeight;
+
+        // Отображаем информацию о размере
+        imageInfo.textContent = `Размер изображения: ${width}x${height} пикселей`;
+
+        // Показываем модальное окно и оверлей
+        document.getElementById('image-preview-overlay').style.display = 'block';
+        document.getElementById('image-preview-modal').style.display = 'block';
+    };
+
+    // Обработчик ошибки, если изображение не загрузилось
+    previewedImage.onerror = function () {
+        alert('Не удалось загрузить изображение.');
+    };
+}
+
+function closeImagePreview() {
     const modal = document.getElementById('image-preview-modal');
     const overlay = document.getElementById('image-preview-overlay');
     modal.style.display = 'none'; // Скрываем модальное окно
     overlay.style.display = 'none'; // Скрываем оверлей
-}
-
-// Назначаем обработчик события на кнопку
-document.getElementById('closemodal').addEventListener('click', closeImagePreview);
-
-    document.getElementById('previewed-image').src = url;
-    document.getElementById('image-preview-overlay').style.display = 'block';
-    document.getElementById('image-preview-modal').style.display = 'block';
 }
 
 document.getElementById('previewButton').addEventListener('click', function() {
