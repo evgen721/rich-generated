@@ -21,6 +21,55 @@
             previewImage.src = blockImages[blockType];
             previewImage.style.display = 'block';
         }
+		
+		// Функция для обновления превью изображения
+function updateImagePreview(input) {
+    const urlContainer = input.closest('.url-container');
+    if (!urlContainer) {
+        console.error('Не найден .url-container');
+        return;
+    }
+
+    const previewContainer = urlContainer.nextElementSibling; // Контейнер для превью
+    if (!previewContainer || !previewContainer.classList.contains('image-preview-container')) {
+        console.error('Не найден .image-preview-container');
+        return;
+    }
+
+    const preview = previewContainer.querySelector('.image-preview');
+    if (!preview) {
+        console.error('Не найдено .image-preview');
+        return;
+    }
+
+    const imageSizeElement = previewContainer.nextElementSibling; // Элемент для отображения размера изображения
+    if (!imageSizeElement || !imageSizeElement.classList.contains('image-size')) {
+        console.error('Не найден .image-size');
+        return;
+    }
+
+    const url = input.value.trim();
+
+    if (url) {
+        const img = new Image();
+        img.src = url;
+
+        img.onload = function() {
+            preview.src = url;
+            preview.style.display = 'block'; // Показываем превью
+            imageSizeElement.textContent = `Размер: ${img.naturalWidth}x${img.naturalHeight} px`; // Отображаем размер изображения
+        };
+
+        img.onerror = function() {
+            preview.style.display = 'none'; // Скрываем превью, если изображение не загрузилось
+            imageSizeElement.textContent = ''; // Очищаем текст с размером
+            alert('Не удалось загрузить изображение.');
+        };
+    } else {
+        preview.style.display = 'none'; // Скрываем превью, если URL пустой
+        imageSizeElement.textContent = ''; // Очищаем текст с размером
+    }
+}
 
         document.getElementById('confirm-block-type').addEventListener('click', function() {
             const blockType = document.getElementById('block-type').value;
@@ -29,66 +78,67 @@
             document.getElementById('modal').style.display = 'none';
         });
 
-        function addBlock(type) {
-            const container = document.getElementById('blocks-container');
-            const block = document.createElement('div');
-            block.className = 'block';
-            block.dataset.type = type;
+function addBlock(type) {
+    const container = document.getElementById('blocks-container');
+    const block = document.createElement('div');
+    block.className = 'block';
+    block.dataset.type = type;
 
-            // Добавляем кнопки управления блоком
-            const controls = document.createElement('div');
-            controls.className = 'block-controls';
-            controls.innerHTML = `
-                <img src="icon/вверх.png" alt="Вверх" onclick="moveBlockUp(this)">
-                <img src="icon/вниз.png" alt="Вниз" onclick="moveBlockDown(this)">
-                <img src="icon/крест.png" alt="Удалить" onclick="deleteBlock(this)">
-            `;
-            block.appendChild(controls);
+    // Добавляем кнопки управления блоком
+    const controls = document.createElement('div');
+    controls.className = 'block-controls';
+    controls.innerHTML = `
+        <img src="icon/вверх.png" alt="Вверх" onclick="moveBlockUp(this)">
+        <img src="icon/вниз.png" alt="Вниз" onclick="moveBlockDown(this)">
+        <img src="icon/крест.png" alt="Удалить" onclick="deleteBlock(this)">
+    `;
+    block.appendChild(controls);
 
-            switch (type) {
-                case 'text':
-                    block.innerHTML += `
-                        <div class="text-controls">
-                            <button onclick="insertParagraph(this)">Абзац</button>
-                            <button onclick="insertOrderedList(this)">Нумерованный список</button>
-                            <button onclick="insertUnorderedList(this)">Маркированный список</button>
-                            <button onclick="insertHeader(this)">Заголовок</button>
-                        </div>
-                        <textarea id="text1" placeholder="Введите текст"></textarea>`;
-                    break;
-                case 'row-gallery':
-                    block.innerHTML += `<div class="row-gallery"></div>
-                                       <button onclick="addImageRow(this)">+Добавить картинку в ряду</button>`;
-                    break;
-                case 'column-gallery':
-                    block.innerHTML += createColumnGalleryBlock();
-                    break;
-                case 'single-media':
-    block.innerHTML += `
-        <div class="single-media-block">
-            <div class="left-column">
-                <select id="change" onchange="changeMediaType(this)">
-                    <option value="image">Картинка</option>
-                    <option value="video">Видео</option>
-                </select>
-                <div class="url-container">
-                    <input type="text" placeholder="URL*" class="required">
-                    <button class="preview-btn" onclick="openImagePreview(this.previousElementSibling.value)">
-                        <img src="icon/5.png" alt="Просмотр">
-                    </button>
+    switch (type) {
+        case 'text':
+            block.innerHTML += `
+                <div class="text-controls">
+                    <button onclick="insertParagraph(this)">Абзац</button>
+                    <button onclick="insertOrderedList(this)">Нумерованный список</button>
+                    <button onclick="insertUnorderedList(this)">Маркированный список</button>
+                    <button onclick="insertHeader(this)">Заголовок</button>
                 </div>
-                <label><input type="checkbox" class="checkbox"> Во всю ширину</label>
-            </div>
-            <div class="right-column">
-                <input type="text" placeholder="Заголовок">
-                <textarea placeholder="Текст"></textarea>
-            </div>
-        </div>`;
-    break;
-            }
+                <textarea id="text1" placeholder="Введите текст"></textarea>`;
+            break;
+        case 'row-gallery':
+            block.innerHTML += `<div class="row-gallery"></div>
+                               <button onclick="addImageRow(this)">+Добавить картинку в ряду</button>`;
+            break;
+        case 'column-gallery':
+            block.innerHTML += createColumnGalleryBlock();
+            break;
+        case 'single-media':
+            block.innerHTML += `
+                <div class="single-media-block">
+                    <div class="left-column">
+                        <select id="change" onchange="changeMediaType(this)">
+                            <option value="image">Картинка</option>
+                            <option value="video">Видео</option>
+                        </select>
+        <div class="url-container">
+            <input type="text" placeholder="URL*" class="required" oninput="updateImagePreview(this)">
+        </div>
+        <div class="image-preview-container" onclick="openImagePreview(this.querySelector('.image-preview').src)">
+            <img class="image-preview" src="" alt="Превью">
+        </div>
+        <div class="image-size"></div>
+                        <label><input type="checkbox" class="checkbox"> Во всю ширину</label>
+                    </div>
+                    <div class="right-column">
+                        <input type="text" placeholder="Заголовок">
+                        <textarea placeholder="Текст"></textarea>
+                    </div>
+                </div>`;
+            break;
+    }
 
-            container.appendChild(block);
-        }
+    container.appendChild(block);
+}
 
         function insertParagraph(button) {
             const block = button.closest('.block');
@@ -123,12 +173,13 @@ function createColumnGalleryBlock() {
                         <option value="left">Картинка слева</option>
                         <option value="right">Картинка справа</option>
                     </select>
-                    <div class="url-container">
-                        <input type="url" placeholder="URL картинки*" class="required">
-                        <button class="preview-btn" onclick="openImagePreview(this.previousElementSibling.value)">
-                            <img src="icon/5.png" alt="Просмотр">
-                        </button>
-                    </div>
+        <div class="url-container">
+            <input type="text" placeholder="URL*" class="required" oninput="updateImagePreview(this)">
+        </div>
+        <div class="image-preview-container" onclick="openImagePreview(this.querySelector('.image-preview').src)">
+            <img class="image-preview" src="" alt="Превью">
+        </div>
+        <div class="image-size"></div>
                 </div>
                 <div class="right-column">
                     <input type="text" placeholder="Заголовок">
@@ -140,6 +191,7 @@ function createColumnGalleryBlock() {
         </div>`;
 }
 
+
 function addImageRow(button) {
     const block = button.parentElement;
     const gallery = block.querySelector('.row-gallery');
@@ -149,23 +201,30 @@ function addImageRow(button) {
     const imageBlock = document.createElement('div');
     imageBlock.className = 'image-block';
     imageBlock.innerHTML = `
-        <div class="url-container">
-            <input type="text" placeholder="URL картинки*" class="required">
-            <button class="preview-btn" onclick="openImagePreview(this.previousElementSibling.value)">
-                <img src="icon/5.png" alt="Просмотр">
-            </button>
+        <div class="image-block-controls">
+            <button class="move-left" onclick="moveImageLeft(this)">←</button>
+            <button class="move-right" onclick="moveImageRight(this)">→</button>
+            <button class="delete-btn" onclick="deleteImageRow(this)">✕</button>
         </div>
+        <div class="url-container">
+            <input type="text" placeholder="URL*" class="required" oninput="updateImagePreview(this)">
+        </div>
+        <div class="image-preview-container" onclick="openImagePreview(this.querySelector('.image-preview').src)">
+            <img class="image-preview" src="" alt="Превью">
+        </div>
+        <div class="image-size"></div>
         <input type="text" placeholder="Заголовок">
         <textarea placeholder="Текст"></textarea>
-        <div class="delete-btn" onclick="deleteImageRow(this)">✕</div>
     `;
     gallery.appendChild(imageBlock);
 }
 
-        function deleteImageRow(button) {
-            const imageBlock = button.parentElement;
-            imageBlock.remove();
-        }
+function deleteImageRow(button) {
+    const imageBlock = button.closest('.image-block');
+    if (imageBlock) {
+        imageBlock.remove();
+    }
+	}
 
 function addColumnItem(button) {
     const block = button.parentElement;
@@ -177,12 +236,13 @@ function addColumnItem(button) {
                 <option value="left">Картинка слева</option>
                 <option value="right">Картинка справа</option>
             </select>
-            <div class="url-container">
-                <input type="url" placeholder="URL картинки*" class="required">
-                <button class="preview-btn" onclick="openImagePreview(this.previousElementSibling.value)">
-                    <img src="icon/5.png" alt="Просмотр">
-                </button>
-            </div>
+        <div class="url-container">
+            <input type="text" placeholder="URL*" class="required" oninput="updateImagePreview(this)">
+        </div>
+        <div class="image-preview-container" onclick="openImagePreview(this.querySelector('.image-preview').src)">
+            <img class="image-preview" src="" alt="Превью">
+        </div>
+        <div class="image-size"></div>
         </div>
         <div class="right-column">
             <input type="text" placeholder="Заголовок">
@@ -197,6 +257,26 @@ function addColumnItem(button) {
             const item = button.closest('.column-item');
             item.remove();
         }
+		
+		function moveImageLeft(button) {
+    const imageBlock = button.closest('.image-block');
+    const prevImageBlock = imageBlock.previousElementSibling;
+
+    // Если есть предыдущий блок, меняем их местами
+    if (prevImageBlock && prevImageBlock.classList.contains('image-block')) {
+        imageBlock.parentElement.insertBefore(imageBlock, prevImageBlock);
+    }
+}
+
+function moveImageRight(button) {
+    const imageBlock = button.closest('.image-block');
+    const nextImageBlock = imageBlock.nextElementSibling;
+
+    // Если есть следующий блок, меняем их местами
+    if (nextImageBlock && nextImageBlock.classList.contains('image-block')) {
+        imageBlock.parentElement.insertBefore(nextImageBlock, imageBlock);
+    }
+}
 
         function toggleTextOrder(select) {
             // Ничего не делаем, так как поля не должны перемещаться
@@ -238,7 +318,7 @@ function addColumnItem(button) {
                             isValid = false;
                             return;
                         }
-                        generatedHTML += `${textValue}\n\n`;
+                        generatedHTML += `${textValue}\n`;
                         break;
                     case 'row-gallery':
                         const imageBlocks = block.querySelectorAll('.image-block');
@@ -264,7 +344,7 @@ imageBlocks.forEach(imageBlock => {
     generatedHTML += `  </div>\n`;
 });
 generatedHTML += ` </div>\n`; // Закрываем обертку для изображений
-generatedHTML += `</div>\n\n`;
+generatedHTML += `</div>\n`;
 break;
                     case 'column-gallery':
                         const columnItems = block.querySelectorAll('.column-item');
@@ -291,13 +371,13 @@ break;
                             generatedHTML += `  <img src="${url}" alt="Пример изображения">\n`;
                             if (title) generatedHTML += `  <div data-block="title">${title}</div>\n`;
                             if (text) generatedHTML += `  <div data-block="text">${text}</div>\n`;
-                            generatedHTML += `</div>\n\n`;
+                            generatedHTML += `</div>\n`;
                         } else {
                             generatedHTML += `<div data-rich-type="single-media">\n`;
                             generatedHTML += `  <video controls><source src="${url}" type="video/mp4">Видео</video>\n`;
                             if (title) generatedHTML += `  <div data-block="title">${title}</div>\n`;
                             if (text) generatedHTML += `  <div data-block="text">${text}</div>\n`;
-                            generatedHTML += `</div>\n\n`;
+                            generatedHTML += `</div>\n`;
                         }
                         break;
                 }
@@ -308,38 +388,41 @@ break;
             }
         });
 
-        function generateColumnGalleryHTML(block) {
-            let output = `<div data-rich-type="column-gallery">\n`;
-            let isValid = true;
+function generateColumnGalleryHTML(block) {
+    let output = `<div data-rich-type="column-gallery">\n`;
+    let isValid = true;
 
-            block.querySelectorAll('.column-item').forEach(item => {
-                const url = item.querySelector('input[type="url"]').value.trim();
-                const text = item.querySelector('textarea').value.trim();
-                const title = item.querySelector('input[type="text"]').value.trim();
-                const position = item.querySelector('select').value;
+    block.querySelectorAll('.column-item').forEach(item => {
+        // Получаем значения элементов
+        const url = item.querySelector('.url-container input[type="text"]').value.trim();
+        const text = item.querySelector('.right-column textarea').value.trim();
+        const title = item.querySelector('.right-column input[type="text"]').value.trim();
+        const position = item.querySelector('.left-column select').value;
 
-                if (!url.trim() || !text.trim()) {
-                    alert('Поля "URL" и "Текст" в блоке "Картинка и текст сбоку" обязательны для заполнения.');
-                    isValid = false;
-                    return;
-                }
-
-                if (position === 'left') {
-                    output += `<div>\n<img src="${url}" alt="Пример изображения">\n<div>\n`;
-                    if (title) output += `<div data-block="title">${title}</div>\n`;
-                    output += `<div data-block="text">${text}</div>\n</div>\n</div>\n`;
-                } else {
-                    output += `<div>\n<div>\n`;
-                    if (title) output += `<div data-block="title">${title}</div>\n`;
-                    output += `<div data-block="text">${text}</div>\n</div>\n<img src="${url}" alt="Пример изображения">\n</div>\n`;
-                }
-            });
-
-            if (!isValid) return '';
-
-            output += '</div>';
-            return output;
+        // Проверяем, что обязательные поля заполнены
+        if (!url || !text) {
+            alert('Поля "URL" и "Текст" в блоке "Картинка и текст сбоку" обязательны для заполнения.');
+            isValid = false;
+            return;
         }
+
+        // Генерируем HTML в зависимости от положения картинки
+        if (position === 'left') {
+            output += `<div>\n<img src="${url}" alt="Пример изображения">\n<div>\n`;
+            if (title) output += `<div data-block="title">${title}</div>\n`;
+            output += `<div data-block="text">${text}</div>\n</div>\n</div>\n`;
+        } else {
+            output += `<div>\n<div>\n`;
+            if (title) output += `<div data-block="title">${title}</div>\n`;
+            output += `<div data-block="text">${text}</div>\n</div>\n<img src="${url}" alt="Пример изображения">\n</div>\n`;
+        }
+    });
+
+    if (!isValid) return '';
+
+    output += '</div>';
+    return output;
+}
 
         document.getElementById('copy-btn').addEventListener('click', function() {
             const generatedDescription = document.getElementById('generated-description').textContent;
@@ -415,3 +498,4 @@ document.getElementById('previewButton').addEventListener('click', function() {
         alert('Нет сгенерированного описания для предпросмотра.');
     }
 });
+
