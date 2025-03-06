@@ -486,31 +486,71 @@ function closeImagePreview() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const previewTab = document.querySelector('.tab[data-tab="preview-web"]');
-    
-    if (previewTab) {
-        previewTab.addEventListener('click', function() {
+    // Обработчик для таба "Предпросмотр веб"
+    const previewWebTab = document.querySelector('.tab[data-tab="preview-web"]');
+    if (previewWebTab) {
+        previewWebTab.addEventListener('click', function() {
             const generatedDescription = document.getElementById('generated-description').textContent;
             
             if (generatedDescription.trim()) {
-                const encodedHTML = encodeURIComponent(generatedDescription);
-                const previewURL = `preview.html?html=${encodedHTML}`;
-                
-                console.log('Generated URL for iframe:', previewURL); // Лог URL
+                // Загружаем preview.html
+                fetch('preview.html')
+                    .then(response => response.text())
+                    .then(html => {
+                        // Вставляем сгенерированный HTML в загруженный preview.html
+                        const updatedHTML = html.replace(
+                            '<!-- CONTENT_PLACEHOLDER -->', 
+                            generatedDescription
+                        );
 
-                const iframe = document.getElementById('preview-iframe');
-                iframe.src = previewURL; // Только src, без srcdoc
-
-                // Лог для проверки, что iframe существует
-                console.log('Iframe element:', iframe);
+                        const iframe = document.getElementById('preview-iframe');
+                        iframe.srcdoc = updatedHTML; // Вставляем обновленный HTML в srcdoc
+                        console.log('preview.html loaded via srcdoc with generated content'); // Лог для проверки
+                    })
+                    .catch(error => {
+                        console.error('Error loading preview.html:', error);
+                    });
             } else {
                 alert('Нет сгенерированного описания для предпросмотра.');
             }
         });
     } else {
-        console.error('Таб для предпросмотра не найден.');
+        console.error('Таб для предпросмотра веб не найден.');
+    }
+
+    // Обработчик для таба "Предпросмотр моб"
+    const previewMobTab = document.querySelector('.tab[data-tab="preview-mob"]');
+    if (previewMobTab) {
+        previewMobTab.addEventListener('click', function() {
+            const generatedDescription = document.getElementById('generated-description').textContent;
+            
+            if (generatedDescription.trim()) {
+                // Загружаем preview_mob.html
+                fetch('preview_mob.html')
+                    .then(response => response.text())
+                    .then(html => {
+                        // Вставляем сгенерированный HTML в загруженный preview_mob.html
+                        const updatedHTML = html.replace(
+                            '<!-- CONTENT_PLACEHOLDER -->', 
+                            generatedDescription
+                        );
+
+                        const iframe = document.getElementById('preview-mob-iframe');
+                        iframe.srcdoc = updatedHTML; // Вставляем обновленный HTML в srcdoc
+                        console.log('preview_mob.html loaded via srcdoc with generated content'); // Лог для проверки
+                    })
+                    .catch(error => {
+                        console.error('Error loading preview_mob.html:', error);
+                    });
+            } else {
+                alert('Нет сгенерированного описания для предпросмотра.');
+            }
+        });
+    } else {
+        console.error('Таб для предпросмотра моб не найден.');
     }
 });
+
 document.querySelectorAll('#top-bar .tab').forEach(tab => {
     tab.addEventListener('click', function () {
         // Убираем активный класс у всех табов
