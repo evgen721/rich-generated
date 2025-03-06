@@ -485,17 +485,61 @@ function closeImagePreview() {
     overlay.style.display = 'none'; // Скрываем оверлей
 }
 
-document.getElementById('previewButton').addEventListener('click', function() {
-    const generatedDescription = document.getElementById('generated-description').textContent;
+document.addEventListener('DOMContentLoaded', function () {
+    const previewTab = document.querySelector('.tab[data-tab="preview-web"]');
     
-    if (generatedDescription.trim()) {
-        // Сохраняем текст в localStorage
-        localStorage.setItem('previewDescription', generatedDescription);
-        
-        // Открываем новую вкладку с preview.html
-        window.open('preview.html', '_blank');
+    if (previewTab) {
+        previewTab.addEventListener('click', function() {
+            const generatedDescription = document.getElementById('generated-description').textContent;
+            
+            if (generatedDescription.trim()) {
+                const encodedHTML = encodeURIComponent(generatedDescription);
+                const previewURL = `preview.html?html=${encodedHTML}`;
+                
+                console.log('Generated URL for iframe:', previewURL); // Лог URL
+
+                const iframe = document.getElementById('preview-iframe');
+                iframe.src = previewURL; // Только src, без srcdoc
+
+                // Лог для проверки, что iframe существует
+                console.log('Iframe element:', iframe);
+            } else {
+                alert('Нет сгенерированного описания для предпросмотра.');
+            }
+        });
     } else {
-        alert('Нет сгенерированного описания для предпросмотра.');
+        console.error('Таб для предпросмотра не найден.');
     }
 });
+document.querySelectorAll('#top-bar .tab').forEach(tab => {
+    tab.addEventListener('click', function () {
+        // Убираем активный класс у всех табов
+        document.querySelectorAll('#top-bar .tab').forEach(t => t.classList.remove('active'));
+        // Добавляем активный класс текущему табу
+        this.classList.add('active');
+
+        // Скрываем все контейнеры
+        document.querySelectorAll('#content-container .content').forEach(content => {
+            content.classList.remove('active');
+        });
+
+        // Показываем выбранный контейнер
+        const tabType = this.getAttribute('data-tab');
+        const content = document.getElementById(`${tabType}-content`);
+        if (content) {
+            content.classList.add('active');
+
+            // Если выбран предпросмотр веб, загружаем HTML в iframe
+            if (tabType === 'preview-web') {
+                const generatedDescription = document.getElementById('generated-description').textContent;
+                const iframe = document.getElementById('preview-iframe');
+                iframe.srcdoc = generatedDescription;
+            }
+        }
+    });
+});
+
+// По умолчанию показываем конструктор
+document.querySelector('#top-bar .tab[data-tab="constructor"]').classList.add('active');
+document.getElementById('constructor-content').classList.add('active');
 

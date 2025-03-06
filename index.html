@@ -3,23 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="icon" href="favicon.png" type="image/x-icon">
-	 <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
     <title>Конструктор RICH-контента</title>
 </head>
-<h3>Конструктор блоков RICH-контента для описаний товаров</h3>
 <body>
-    <div id="blocks-container"></div>
-    <button id="add-block-btn">+ Добавить блок</button>
-    <button id="generate-btn">Сформировать</button>
-	<button id="previewButton">Предпросмотр</button>
-    <button id="copy-btn">Скопировать описание</button>
+    <!-- Шторка с табами -->
+    <div id="top-bar">
+        <div class="tab" data-tab="constructor">Конструктор</div>
+        <div class="tab" data-tab="preview-web">Предпросмотр веб</div>
+        <div class="tab" data-tab="preview-mob">Предпросмотр моб</div>
+    </div>
 
+    <!-- Контейнер для основного контента -->
+    <div id="content-container">
+        <!-- Конструктор -->
+        <div id="constructor-content" class="content active">
+            <h3>Конструктор блоков RICH-контента для описаний товаров</h3>
+            <div id="blocks-container"></div>
+            <button id="add-block-btn">+ Добавить блок</button>
+            <button id="generate-btn">Сформировать</button>
+            <button id="copy-btn">Скопировать описание</button>
+            <div class="rer">Описание HTML</div>
+            <div id="generated-description"></div>
+        </div>
 
-	<div class="rer">
-	Описание HTML</div>
-    <div id="generated-description"></div>
+        <!-- Предпросмотр веб -->
+        <div id="preview-web-content" class="content">
+            <iframe id="preview-iframe" src="about:blank"></iframe>
+        </div>
 
+        <!-- Предпросмотр моб (пока пустой) -->
+        <div id="preview-mob-content" class="content">
+            <p>Предпросмотр моб (в разработке)</p>
+        </div>
+    </div>
+
+    <!-- Модальные окна и другие элементы -->
     <div class="overlay" id="overlay"></div>
     <div class="modal" id="modal">
         <h3>Выберите тип блока</h3>
@@ -34,14 +54,14 @@
         </div>
         <button id="confirm-block-type">Выбрать</button>
     </div>
-	<script src="content.js"></script>
-	    
-	<div class="image-preview-overlay" id="image-preview-overlay"></div>
-<div class="image-preview-modal" id="image-preview-modal">
-<div id="image-info" style="margin-bottom: 10px; font-weight: bold;"></div>
-    <img id="previewed-image" src="" alt="Просмотр изображения">
-    <button id="closemodal">Закрыть</button>
-</div>
-</div>
+
+    <div class="image-preview-overlay" id="image-preview-overlay"></div>
+    <div class="image-preview-modal" id="image-preview-modal">
+        <div id="image-info" style="margin-bottom: 10px; font-weight: bold;"></div>
+        <img id="previewed-image" src="" alt="Просмотр изображения">
+        <button id="closemodal">Закрыть</button>
+    </div>
+
+    <script src="content.js"></script>
 </body>
 </html>
