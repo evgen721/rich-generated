@@ -550,6 +550,17 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error('Таб для предпросмотра моб не найден.');
     }
 });
+const iframe = document.getElementById('preview-iframe');
+iframe.onload = function() {
+    const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+    const links = iframeDocument.querySelectorAll('a');
+
+    links.forEach(link => {
+        link.addEventListener('click', function(event) {
+            event.preventDefault(); // Запрещаем переход по ссылке
+        });
+    });
+};
 
 document.querySelectorAll('#top-bar .tab').forEach(tab => {
     tab.addEventListener('click', function () {
