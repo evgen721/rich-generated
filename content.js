@@ -494,7 +494,7 @@ document.addEventListener('DOMContentLoaded', function () {
             
             if (generatedDescription.trim()) {
                 // Загружаем preview.html
-                fetch('preview.html')
+                fetch('preview_desktop.html')
                     .then(response => response.text())
                     .then(html => {
                         // Вставляем сгенерированный HTML в загруженный preview.html
@@ -526,7 +526,7 @@ document.addEventListener('DOMContentLoaded', function () {
             
             if (generatedDescription.trim()) {
                 // Загружаем preview_mob.html
-                fetch('preview_mob.html')
+                fetch('preview_mobile.html')
                     .then(response => response.text())
                     .then(html => {
                         // Вставляем сгенерированный HTML в загруженный preview_mob.html
@@ -587,6 +587,19 @@ document.querySelectorAll('#top-bar .tab').forEach(tab => {
                 iframe.srcdoc = generatedDescription;
             }
         }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const tabs = document.querySelectorAll('.tab');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function () {
+            // Убираем активный класс у всех табов
+            tabs.forEach(t => t.classList.remove('active'));
+            // Добавляем активный класс текущему табу
+            tab.classList.add('active');
+        });
     });
 });
 
