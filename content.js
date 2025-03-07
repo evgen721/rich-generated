@@ -603,6 +603,38 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+    const secondTopBar = document.getElementById('second-top-bar');
+    const tabs = document.querySelectorAll('.tab');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function () {
+            const tabType = this.getAttribute('data-tab');
+
+            // Убираем активный класс у всех табов
+            tabs.forEach(t => t.classList.remove('active'));
+
+            // Добавляем активный класс текущему табу
+            this.classList.add('active');
+
+            // Управляем видимостью второго топ-бара
+            if (tabType === 'constructor') {
+                secondTopBar.style.display = 'flex'; // Показываем второй топ-бар
+                setTimeout(() => {
+                    secondTopBar.style.opacity = '1'; // Плавное появление
+                }, 10);
+            } else {
+                secondTopBar.style.opacity = '0'; // Плавное исчезновение
+                setTimeout(() => {
+                    secondTopBar.style.display = 'none'; // Скрываем второй топ-бар
+                }, 300); // Время анимации
+            }
+        });
+    });
+});
+
+
+
 // По умолчанию показываем конструктор
 document.querySelector('#top-bar .tab[data-tab="constructor"]').classList.add('active');
 document.getElementById('constructor-content').classList.add('active');

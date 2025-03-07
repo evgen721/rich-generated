@@ -8,8 +8,8 @@
     <title>Конструктор RICH-контента</title>
 </head>
 <body>
-    <!-- Шторка с табами -->
-<div id="top-bar">
+    <!-- Основной топ-бар -->
+    <div id="top-bar">
     <div class="tab" data-tab="constructor">
         <img src="icon/8.png" alt="Конструктор" class="tab-icon">
         <span class="tab-name">Конструктор</span>
@@ -26,28 +26,32 @@
     </div>
 </div>
 
+    <!-- Второй топ-бар -->
+    <div id="second-top-bar">
+    <button id="add-block-btn">+ Добавить блок</button>
+    <button id="generate-btn">Сформировать</button>
+    <button id="copy-btn">Скопировать описание HTML</button>
+	<div class="title-top-bar">Конструктор блоков RICH-контента для описаний товаров</div>
+	
+</div>
+
     <!-- Контейнер для основного контента -->
     <div id="content-container">
         <!-- Конструктор -->
         <div id="constructor-content" class="content active">
-            <h3>Конструктор блоков RICH-контента для описаний товаров</h3>
             <div id="blocks-container"></div>
-            <button id="add-block-btn">+ Добавить блок</button>
-            <button id="generate-btn">Сформировать</button>
-            <button id="copy-btn">Скопировать описание</button>
             <div class="rer">Описание HTML</div>
             <div id="generated-description"></div>
         </div>
 
         <!-- Предпросмотр веб -->
-		
         <div id="preview-web-content" class="content">
-           <iframe id="preview-iframe" src="about:blank" sandbox="allow-scripts allow-same-origin" csp="default-src 'self'; img-src *;"></iframe>
+            <iframe id="preview-iframe" src="about:blank" sandbox="allow-scripts allow-same-origin" csp="default-src 'self'; img-src *;"></iframe>
         </div>
 
-        <!-- Предпросмотр моб (пока пустой) -->
+        <!-- Предпросмотр моб -->
         <div id="preview-mob-content" class="content">
-             <iframe id="preview-mob-iframe" src="about:blank" sandbox="allow-scripts allow-same-origin" csp="default-src 'self'; img-src *;"></iframe>
+            <iframe id="preview-mob-iframe" src="about:blank" sandbox="allow-scripts allow-same-origin" csp="default-src 'self'; img-src *;"></iframe>
         </div>
     </div>
 

@@ -3,7 +3,7 @@
 			background: linear-gradient(to right, #7dffe536, #aceaed);
         }
         .block {
-            border: 3px solid #00000060;
+            border: 3px solid #34495eb3;
 			border-radius: 8px;
             padding: 10px;
             margin-bottom: 10px;
@@ -343,13 +343,6 @@
     color: #333; /* Цвет стрелок */
 }
 
-h3 {
-    margin-top: 70px; /* Отступ сверху */
-    margin-left: 5px; /* Отступ слева (опционально) */
-    font-family: Arial, sans-serif;
-    color: #2c3e50; /* Цвет текста */
-}
-
 #top-bar {
     position: fixed;
     top: 0;
@@ -451,5 +444,41 @@ h3 {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Стили для второго топ-бара */
+#second-top-bar {
+    display: flex;
+    align-items: center;
+    background-color: #34495e; /* Темный фон, как у основного топ-бара */
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    position: sticky; /* Фиксированная позиция при скролле */
+    top: 60px; /* Отступ сверху (высота основного топ-бара) */
+    z-index: 1000; /* Чтобы топ-бар был поверх других элементов */
+    opacity: 1; /* Начальная прозрачность */
+    transition: opacity 0.3s ease, display 0.3s ease; /* Анимация */
+}
 
+/* Стили для кнопок во втором топ-баре */
+#second-top-bar button {
+    background-color: #224ec3;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
 
+#second-top-bar button:hover {
+    background-color: #0d3295cc;
+}
+
+.title-top-bar {
+	
+    margin-left: 5px; 
+    font-family: Arial, sans-serif;
+    color: #ffffff; 
+}
