@@ -40,7 +40,7 @@
         <!-- Конструктор -->
         <div id="constructor-content" class="content active">
             <div id="blocks-container"></div>
-            <div class="rer">Описание HTML</div>
+            <div class="h3-generated-description">Описание HTML</div>
             <div id="generated-description"></div>
         </div>
 
@@ -68,14 +68,16 @@
         <div id="block-preview">
             <img id="preview-image" src="" alt="Пример блока" style="display: none;">
         </div>
-        <button id="confirm-block-type">Выбрать</button>
+        <button class="button-all" id="confirm-block-type">Выбрать</button>
     </div>
 
     <div class="image-preview-overlay" id="image-preview-overlay"></div>
     <div class="image-preview-modal" id="image-preview-modal">
         <div id="image-info" style="margin-bottom: 10px; font-weight: bold;"></div>
         <img id="previewed-image" src="" alt="Просмотр изображения">
-        <button id="closemodal">Закрыть</button>
+        <div class="image-block-controls">
+		<button class="delete-btn" id="closemodal">✕</button>
+		</div>
     </div>
 
     <script src="content.js"></script>
