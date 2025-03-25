@@ -300,20 +300,18 @@ body {
 
 /* Стили для блоков */
 		
-
 .block {
-    border: 3px solid #34495e;
+    border: 2px solid #34495e;
     border-radius: 8px;
-    padding: 0; /* Убираем общий padding */
-    margin-bottom: 10px;
+    padding: 0; 
+    margin-bottom: 20px;
     position: relative;
     background: linear-gradient(to right, #f9f9f9, #e3e3e3ad);
     width: 90%;
-    overflow: hidden; /* Чтобы скругленные углы работали правильно */
+    overflow: hidden; 
+	box-shadow: 0px 5px 10px 2px rgb(34 60 80 / 52%)
 }
 
-		
-/* Стиль верхней панели блока в стиле Windows XP */
 .block-top-container {
     background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
     border-bottom: 1px solid #a0a0a0;
@@ -324,16 +322,14 @@ body {
     height: 24px;
     box-shadow: inset 0 1px 0 #ffffff;
     position: relative;
-    margin: 0; /* Убираем все отступы */
-    width: 100%; /* Занимает всю ширину */
+    margin: 0;
+    width: 100%;
 }
 
-/* Основное содержимое блока */
 .block-content {
-    padding: 10px; /* Отступ от верхней панели до контента */
+    padding: 10px;
 }
 
-/* Остальные стили остаются без изменений */
 .block-info {
     display: flex;
     align-items: center;
@@ -367,8 +363,6 @@ body {
     height: 100%;
 	margin-right: 10px;
 }
-
-
 		
 .h3-generated-description { 
              margin-top: 10px;
