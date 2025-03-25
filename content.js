@@ -100,21 +100,52 @@ if (previewMobTab) {
 
 // Функции для работы с блоками
 
+// В функции addBlock добавляем номер блока
 function addBlock(type) {
     const container = document.getElementById('blocks-container');
     const block = document.createElement('div');
     block.className = 'block';
     block.dataset.type = type;
 
-    // Добавляем кнопки управления блоком
+    // Определяем название блока для отображения
+    const blockTitles = {
+        'text': 'Текст',
+        'row-gallery': 'Картинки в ряд',
+        'column-gallery': 'Картинка слева/справа',
+        'single-media': 'Картинка (+во всю ширину)'
+    };
+    const blockTitle = blockTitles[type] || 'Блок';
+
+    // Добавляем номер и название блока слева
+    const blockInfo = document.createElement('div');
+    blockInfo.className = 'block-info';
+    blockInfo.innerHTML = `
+        <div class="block-number">${container.children.length + 1}</div>
+        <div class="block-title">${blockTitle}</div>
+    `;
+    
+    // Добавляем кнопки управления справа
     const controls = document.createElement('div');
     controls.className = 'block-controls';
     controls.innerHTML = `
-        <img src="icon/вверх.png" alt="Вверх" onclick="moveBlockUp(this)">
-        <img src="icon/вниз.png" alt="Вниз" onclick="moveBlockDown(this)">
-        <img src="icon/крест.png" alt="Удалить" onclick="deleteBlock(this)">
+        <button class="block-control-btn" onclick="moveBlockUp(this)" title="Переместить вверх">
+            <img src="icon/вверх.png" alt="Вверх" class="control-icon">
+        </button>
+        <button class="block-control-btn" onclick="moveBlockDown(this)" title="Переместить вниз">
+            <img src="icon/вниз.png" alt="Вниз" class="control-icon">
+        </button>
+        <button class="block-control-btn delete-btn" onclick="deleteBlock(this)" title="Удалить блок">
+            <img src="icon/крест.png" alt="Удалить" class="control-icon">
+        </button>
     `;
-    block.appendChild(controls);
+    
+    // Создаем контейнер для номера и контролов
+    const topContainer = document.createElement('div');
+    topContainer.className = 'block-top-container';
+    topContainer.appendChild(blockInfo);
+    topContainer.appendChild(controls);
+    
+    block.appendChild(topContainer);
 
     switch (type) {
         case 'text':
@@ -134,44 +165,83 @@ function addBlock(type) {
         case 'column-gallery':
             block.innerHTML += createColumnGalleryBlock();
             break;
-case 'single-media':
-    block.innerHTML += `
-        <div class="single-media-block">
-            <div class="left-column">
-                <select id="change" onchange="changeMediaType(this)">
-                    <option value="image">Картинка</option>
-                    <option value="video">Видео</option>
-                </select>
-                <div class="url-container">
-                    <input type="text" placeholder="URL*" oninput="updateImagePreview(this)" class="required-placeholder">
-                </div>
-                <div class="media-controls-container">
-                    <div class="new-container">
-                        <div class="image-preview-container" onclick="openImagePreview(this.querySelector('.image-preview').src)">
-                            <img class="image-preview" src="" alt="Превью">
+        case 'single-media':
+            block.innerHTML += `
+                <div class="single-media-block">
+                    <div class="left-column">
+                        <select id="change" onchange="changeMediaType(this)">
+                            <option value="image">Картинка</option>
+                            <option value="video">Видео</option>
+                        </select>
+                        <div class="url-container">
+                            <input type="text" placeholder="URL*" oninput="updateImagePreview(this)" class="required-placeholder">
                         </div>
-                        <div class="image-size"></div>
-                    </div>
-                    <div class="width-and-checkbox-container">
-                        <div class="width-container">
-                            <input type="number" placeholder="Ширина % (необязательно)" min="1" max="100">
+                        <div class="media-controls-container">
+                            <div class="new-container">
+                                <div class="image-preview-container" onclick="openImagePreview(this.querySelector('.image-preview').src)">
+                                    <img class="image-preview" src="" alt="Превью">
+                                </div>
+                                <div class="image-size"></div>
+                            </div>
+                            <div class="width-and-checkbox-container">
+                                <div class="width-container">
+                                    <input type="number" placeholder="Ширина % (необязательно)" min="1" max="100">
+                                </div>
+                                <label>
+                                    <input type="checkbox" class="checkbox" onchange="toggleWidthField(this)"> Во всю ширину (необязательно)
+                                </label>
+                            </div>
                         </div>
-                        <label>
-                            <input type="checkbox" class="checkbox" onchange="toggleWidthField(this)"> Во всю ширину (необязательно)
-                        </label>
                     </div>
-                </div>
-            </div>
-            <div class="right-column">
-                <input type="text" placeholder="Заголовок">
-                <textarea placeholder="Текст"></textarea>
-            </div>
-        </div>`;
-    break;
-	}
+                    <div class="right-column">
+                        <input type="text" placeholder="Заголовок">
+                        <textarea placeholder="Текст"></textarea>
+                    </div>
+                </div>`;
+            break;
+    }
 
     container.appendChild(block);
 }
+
+// Обновляем функцию moveBlockUp для обновления номеров
+function moveBlockUp(button) {
+    const block = button.closest('.block');
+    const prevBlock = block.previousElementSibling;
+    if (prevBlock) {
+        block.parentElement.insertBefore(block, prevBlock);
+        updateBlockNumbers();
+    }
+}
+
+// Обновляем функцию moveBlockDown для обновления номеров
+function moveBlockDown(button) {
+    const block = button.closest('.block');
+    const nextBlock = block.nextElementSibling;
+    if (nextBlock) {
+        block.parentElement.insertBefore(nextBlock, block);
+        updateBlockNumbers();
+    }
+}
+
+// Обновляем функцию deleteBlock для обновления номеров
+function deleteBlock(button) {
+    const block = button.closest('.block');
+    block.remove();
+    updateBlockNumbers();
+}
+
+// Новая функция для обновления номеров блоков
+function updateBlockNumbers() {
+    const blocks = document.querySelectorAll('.block');
+    blocks.forEach((block, index) => {
+        const blockNumber = block.querySelector('.block-number');
+        if (blockNumber) {
+            blockNumber.textContent = index + 1;
+        }
+    });
+}
+
 
 function toggleWidthField(checkbox) {
     const widthInput = checkbox.closest('.single-media-block').querySelector('.width-container input');
@@ -338,6 +408,7 @@ function moveBlockUp(button) {
     const prevBlock = block.previousElementSibling;
     if (prevBlock) {
         block.parentElement.insertBefore(block, prevBlock);
+        updateBlockNumbers();
     }
 }
 
@@ -346,12 +417,24 @@ function moveBlockDown(button) {
     const nextBlock = block.nextElementSibling;
     if (nextBlock) {
         block.parentElement.insertBefore(nextBlock, block);
+        updateBlockNumbers();
     }
 }
 
 function deleteBlock(button) {
     const block = button.closest('.block');
     block.remove();
+    updateBlockNumbers();
+}
+
+function updateBlockNumbers() {
+    const blocks = document.querySelectorAll('.block');
+    blocks.forEach((block, index) => {
+        const blockNumber = block.querySelector('.block-number');
+        if (blockNumber) {
+            blockNumber.textContent = index + 1;
+        }
+    });
 }
 
 // Функции для работы с текстом
@@ -389,55 +472,6 @@ function insertHeader(button) {
 }
 
 
-
-// Функции для генерации HTML
-
-function generateColumnGalleryHTML(block) {
-    let output = `<div data-rich-type="column-gallery">\n`;
-    let isValid = true;
-
-    block.querySelectorAll('.column-item').forEach(item => {
-        // Получаем значения элементов
-        const url = item.querySelector('.url-container input[type="text"]').value.trim();
-        const text = item.querySelector('.right-column textarea').value.trim();
-        const title = item.querySelector('.right-column input[type="text"]').value.trim();
-        const position = item.querySelector('.left-column select').value;
-		const widthInput = item.querySelector('.width-container input[type="number"]');
-        const width = widthInput ? widthInput.value.trim() : '';
-
-        // Проверяем, что обязательные поля заполнены
-        if (!url || !text) {
-            alert('Поля "URL" и "Текст" в блоке "Картинка и текст сбоку" обязательны для заполнения.');
-            isValid = false;
-            return;
-        }
-
-        // Генерируем HTML в зависимости от положения картинки
-        if (position === 'left') {
-            output += `<div>\n<img src="${url}" alt="Пример изображения"`;
-            if (width) {
-                output += ` style="width: ${width}%"`; // Добавляем ширину, если она указана
-            }
-            output += `>\n<div>\n`;	
-            if (title) output += `<div data-block="title">${title}</div>\n`;
-            output += `<div data-block="text">${text}</div>\n</div>\n</div>\n`;
-        } else {
-            output += `<div>\n<div>\n`;
-            if (title) output += `<div data-block="title">${title}</div>\n`;
-            output += `<div data-block="text">${text}</div>\n</div>\n<img src="${url}" alt="Пример изображения"`;
-            if (width) {
-                output += ` style="width: ${width}%"`; // Добавляем ширину, если она указана
-            }
-            output += `>\n</div>\n`;
-        }
-    });
-
-    if (!isValid) return '';
-
-    output += '</div>';
-    return output;
-}
-
 let isDescriptionDirty = true; // Флаг для отслеживания изменений в блоках
 
 // Функция для генерации описания
@@ -445,93 +479,146 @@ function generateDescription() {
     const blocks = document.querySelectorAll('.block');
     let generatedHTML = '';
     let isValid = true;
+    let errors = [];
+    const blockTypes = {
+        'text': 'Текст',
+        'row-gallery': 'Картинки в ряд',
+        'column-gallery': 'Картинка и текст сбоку',
+        'single-media': 'Картинка во всю ширину'
+    };
 
-    blocks.forEach(block => {
+    blocks.forEach((block, index) => {
+        const blockNumber = index + 1;
         const type = block.dataset.type;
+        const blockName = blockTypes[type] || 'Блок';
+
         switch (type) {
             case 'text':
                 const textValue = block.querySelector('textarea').value;
                 if (!textValue.trim()) {
-                    alert('Поле "Текст" в блоке "Текст" не заполнено.');
+                    errors.push(`Блок №${blockNumber} (${blockName}): не заполнено поле "Текст"`);
                     isValid = false;
-                    return;
+                } else {
+                    generatedHTML += `${textValue}\n`;
                 }
-                generatedHTML += `${textValue}\n`;
                 break;
+
             case 'row-gallery':
                 const imageBlocks = block.querySelectorAll('.image-block');
                 if (imageBlocks.length === 0) {
-                    alert('В блоке "Картинки в ряд" нет добавленных картинок.');
+                    errors.push(`Блок №${blockNumber} (${blockName}): нет добавленных картинок`);
                     isValid = false;
-                    return;
+                } else {
+                    generatedHTML += `<div data-rich-type="row-gallery">\n <div data-block="images">\n`;
+                    
+                    imageBlocks.forEach((imageBlock, imgIndex) => {
+                        const url = imageBlock.querySelector('input[type="text"]').value;
+                        const title = imageBlock.querySelectorAll('input[type="text"]')[1].value;
+                        const text = imageBlock.querySelector('textarea').value;
+                        
+                        if (!url.trim()) {
+                            errors.push(`Блок №${blockNumber} (${blockName}), изображение ${imgIndex + 1}: не заполнено поле "URL"`);
+                            isValid = false;
+                        } else {
+                            generatedHTML += `  <div>\n    <img src="${url}" alt="Пример изображения">\n`;
+                            if (title) generatedHTML += `    <div data-block="title">${title}</div>\n`;
+                            if (text) generatedHTML += `    <div data-block="text">${text}</div>\n`;
+                            generatedHTML += `  </div>\n`;
+                        }
+                    });
+                    
+                    generatedHTML += ` </div>\n</div>\n`;
                 }
-                generatedHTML += `<div data-rich-type="row-gallery">\n`;
-                generatedHTML += ` <div data-block="images">\n`;
-                imageBlocks.forEach(imageBlock => {
-                    const url = imageBlock.querySelector('input[type="text"]').value;
-                    const title = imageBlock.querySelectorAll('input[type="text"]')[1].value;
-                    const text = imageBlock.querySelector('textarea').value;
-                    if (!url.trim()) {
-                        alert('Поле "URL" в блоке "Картинки в ряд" не заполнено.');
-                        isValid = false;
-                        return;
-                    }
-                    generatedHTML += `  <div>\n    <img src="${url}" alt="Пример изображения">\n`;
-                    if (title) generatedHTML += `    <div data-block="title">${title}</div>\n`;
-                    if (text) generatedHTML += `    <div data-block="text">${text}</div>\n`;
-                    generatedHTML += `  </div>\n`;
-                });
-                generatedHTML += ` </div>\n`;
-                generatedHTML += `</div>\n`;
                 break;
+
             case 'column-gallery':
                 const columnItems = block.querySelectorAll('.column-item');
                 if (columnItems.length === 0) {
-                    alert('В блоке "Картинка и текст сбоку" нет добавленных элементов.');
+                    errors.push(`Блок №${blockNumber} (${blockName}): нет добавленных элементов`);
                     isValid = false;
-                    return;
+                } else {
+                    generatedHTML += `<div data-rich-type="column-gallery">\n`;
+                    
+                    columnItems.forEach((item, colIndex) => {
+                        const url = item.querySelector('.url-container input[type="text"]').value.trim();
+                        const text = item.querySelector('.right-column textarea').value.trim();
+                        const title = item.querySelector('.right-column input[type="text"]').value.trim();
+                        const position = item.querySelector('.left-column select').value;
+                        const widthInput = item.querySelector('.width-container input[type="number"]');
+                        const width = widthInput ? widthInput.value.trim() : '';
+
+                        if (!url) {
+                            errors.push(`Блок №${blockNumber} (${blockName}), элемент ${colIndex + 1}: не заполнено поле "URL"`);
+                            isValid = false;
+                        }
+                        if (!text) {
+                            errors.push(`Блок №${blockNumber} (${blockName}), элемент ${colIndex + 1}: не заполнено поле "Текст"`);
+                            isValid = false;
+                        }
+
+                        if (url && text) {
+                            if (position === 'left') {
+                                generatedHTML += `<div>\n<img src="${url}" alt="Пример изображения"`;
+                                if (width) generatedHTML += ` style="width: ${width}%"`;
+                                generatedHTML += `>\n<div>\n`;
+                                if (title) generatedHTML += `<div data-block="title">${title}</div>\n`;
+                                generatedHTML += `<div data-block="text">${text}</div>\n</div>\n</div>\n`;
+                            } else {
+                                generatedHTML += `<div>\n<div>\n`;
+                                if (title) generatedHTML += `<div data-block="title">${title}</div>\n`;
+                                generatedHTML += `<div data-block="text">${text}</div>\n</div>\n<img src="${url}" alt="Пример изображения"`;
+                                if (width) generatedHTML += ` style="width: ${width}%"`;
+                                generatedHTML += `>\n</div>\n`;
+                            }
+                        }
+                    });
+                    
+                    generatedHTML += `</div>\n`;
                 }
-                generatedHTML += generateColumnGalleryHTML(block);
                 break;
+
             case 'single-media':
-                const url = block.querySelector('input[type="text"]').value;
-                const title = block.querySelectorAll('input[type="text"]')[1].value;
-                const text = block.querySelector('textarea').value;
+                const url = block.querySelector('.url-container input[type="text"]').value;
+                const title = block.querySelectorAll('.right-column input[type="text"]')[0]?.value || '';
+                const text = block.querySelector('.right-column textarea')?.value || '';
                 const mediaType = block.querySelector('select').value;
                 const isWide = block.querySelector('input[type="checkbox"]').checked;
-                const width = block.querySelector('.width-container input').value;
+                const width = block.querySelector('.width-container input')?.value || '';
 
                 if (!url.trim()) {
-                    alert('Поле "URL" в блоке "Картинка во всю ширину" не заполнено.');
+                    errors.push(`Блок №${blockNumber} (${blockName}): не заполнено поле "URL"`);
                     isValid = false;
-                    return;
-                }
-
-                if (mediaType === 'image') {
-                    generatedHTML += `<div data-rich-type="single-media" ${isWide ? 'data-view="wide"' : ''}>\n`;
-                    generatedHTML += `  <img src="${url}" alt="Пример изображения"`;
-                    if (width && !isWide) {
-                        generatedHTML += ` style="width: ${width}%"`;
-                    }
-                    generatedHTML += `>\n`;
-                    if (title) generatedHTML += `  <div data-block="title">${title}</div>\n`;
-                    if (text) generatedHTML += `  <div data-block="text">${text}</div>\n`;
-                    generatedHTML += `</div>\n`;
                 } else {
-                    generatedHTML += `<div data-rich-type="single-media">\n`;
-                    generatedHTML += `  <video controls><source src="${url}" type="video/mp4">Видео</video>\n`;
-                    if (title) generatedHTML += `  <div data-block="title">${title}</div>\n`;
-                    if (text) generatedHTML += `  <div data-block="text">${text}</div>\n`;
-                    generatedHTML += `</div>\n`;
+                    if (mediaType === 'image') {
+                        generatedHTML += `<div data-rich-type="single-media" ${isWide ? 'data-view="wide"' : ''}>\n`;
+                        generatedHTML += `  <img src="${url}" alt="Пример изображения"`;
+                        if (width && !isWide) generatedHTML += ` style="width: ${width}%"`;
+                        generatedHTML += `>\n`;
+                        if (title) generatedHTML += `  <div data-block="title">${title}</div>\n`;
+                        if (text) generatedHTML += `  <div data-block="text">${text}</div>\n`;
+                        generatedHTML += `</div>\n`;
+                    } else {
+                        generatedHTML += `<div data-rich-type="single-media">\n`;
+                        generatedHTML += `  <video controls><source src="${url}" type="video/mp4">Видео</video>\n`;
+                        if (title) generatedHTML += `  <div data-block="title">${title}</div>\n`;
+                        if (text) generatedHTML += `  <div data-block="text">${text}</div>\n`;
+                        generatedHTML += `</div>\n`;
+                    }
                 }
                 break;
         }
     });
 
-    if (isValid) {
-        document.getElementById('generated-description').textContent = generatedHTML;
+    if (!isValid) {
+        let errorMessage = "Обнаружены ошибки в следующих блоках:\n\n";
+        errorMessage += errors.join("\n");
+        errorMessage += "\n\nПожалуйста, исправьте ошибки и попробуйте снова.";
+        alert(errorMessage);
+        return false;
     }
-    return isValid;
+
+    document.getElementById('generated-description').textContent = generatedHTML;
+    return true;
 }
 
 // Обработчик для кнопки "Сформировать"

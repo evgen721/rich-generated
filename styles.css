@@ -6,6 +6,7 @@ body {
         }
 		
 /* Основной контент */
+
 #content-container {
     margin-top: 60px; /* Отступ для шторки */
 }
@@ -72,6 +73,7 @@ body {
 }		
 
 /* Стили для второго топ-бара */
+
 #second-top-bar {
     display: flex;
     align-items: center;
@@ -139,7 +141,7 @@ body {
 }
 
 .image-block-controls button {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: #ffffff;
     border: 1px solid #ccc;
     border-radius: 5px;
     cursor: pointer;
@@ -153,7 +155,7 @@ body {
 }
 
 .image-block-controls button:hover {
-    background-color: rgba(255, 255, 255, 1);
+    background-color: #e7e7e7;
     border-color: #999;
 }
 
@@ -206,7 +208,7 @@ body {
             z-index: 999;
         }
 
-#block-type { /* Поле выбора типа блока  */
+#block-type { 
             width: 50%;
             padding: 8px;
             border: 1px solid #ccc;
@@ -268,7 +270,7 @@ body {
 /* Стили для блоков */
 		
 .block {
-            border: 3px solid #34495eb3;
+            border: 3px solid #597da5;
 			border-radius: 8px;
             padding: 10px;
             margin-bottom: 10px;
@@ -277,18 +279,69 @@ body {
 			width: 90%;
         }
 		
+.block-top-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.block-info {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.block-title {
+    background-color: #6f97c5;
+    color: white;
+    border-radius: 4px;
+    padding: 4px 12px;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.block-number {
+    width: 24px;
+    height: 24px;
+    background-color: #6f97c5;
+    color: white;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+
 .block-controls {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-        }
-		
-.block-controls img {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-            margin-left: 5px;
-        }
+    display: flex;
+    gap: 5px;
+}
+
+.block-control-btn {
+    width: 24px;
+    height: 24px;
+    background-color: #6f97c5;
+    border-radius: 4px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 0.2s;
+}
+
+.block-control-btn:hover {
+    background-color: #3a6698;
+}
+
+.control-icon {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+}
 		
 .h3-generated-description { 
              margin-top: 10px;
@@ -333,8 +386,7 @@ body {
             padding: 10px;
             background-color: #fff;
             position: relative;
-            margin-top: 20px;
-			margin-bottom: 15px;
+			margin-bottom: 10px;
             width: 14%;
 			padding-top: 30px;
         }
@@ -373,7 +425,6 @@ body {
     padding: 10px;
     background-color: #fff;
     position: relative;
-    margin-top: 20px;
     display: flex;
     gap: 10px;
 }
@@ -421,7 +472,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-top: 20px;
     max-width: 50%;
 }
 
