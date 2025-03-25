@@ -107,7 +107,11 @@ function addBlock(type) {
     block.className = 'block';
     block.dataset.type = type;
 
-    // Определяем название блока для отображения
+    // Создаем верхний контейнер в стиле Windows XP
+    const topContainer = document.createElement('div');
+    topContainer.className = 'block-top-container';
+
+    // Определяем название блока
     const blockTitles = {
         'text': 'Текст',
         'row-gallery': 'Картинки в ряд',
@@ -116,60 +120,64 @@ function addBlock(type) {
     };
     const blockTitle = blockTitles[type] || 'Блок';
 
-    // Добавляем номер и название блока слева
+    // Контейнер для информации о блоке (номер + название)
     const blockInfo = document.createElement('div');
     blockInfo.className = 'block-info';
     blockInfo.innerHTML = `
         <div class="block-number">${container.children.length + 1}</div>
         <div class="block-title">${blockTitle}</div>
     `;
-    
-    // Добавляем кнопки управления справа
+
+    // Кнопки управления с иконками
     const controls = document.createElement('div');
     controls.className = 'block-controls';
     controls.innerHTML = `
-        <button class="block-control-btn" onclick="moveBlockUp(this)" title="Переместить вверх">
-            <img src="icon/вверх.png" alt="Вверх" class="control-icon">
+        <button class="block-control-btn move-up" onclick="moveBlockUp(this)" title="Переместить вверх">
+            <img src="icon/вверх.png" alt="↑" class="control-icon">
         </button>
-        <button class="block-control-btn" onclick="moveBlockDown(this)" title="Переместить вниз">
-            <img src="icon/вниз.png" alt="Вниз" class="control-icon">
+        <button class="block-control-btn move-down" onclick="moveBlockDown(this)" title="Переместить вниз">
+            <img src="icon/вниз.png" alt="↓" class="control-icon">
         </button>
         <button class="block-control-btn delete-btn" onclick="deleteBlock(this)" title="Удалить блок">
-            <img src="icon/крест.png" alt="Удалить" class="control-icon">
+            <img src="icon/крест.png" alt="×" class="control-icon">
         </button>
     `;
-    
-    // Создаем контейнер для номера и контролов
-    const topContainer = document.createElement('div');
-    topContainer.className = 'block-top-container';
+
+    // Собираем верхнюю панель
     topContainer.appendChild(blockInfo);
     topContainer.appendChild(controls);
-    
     block.appendChild(topContainer);
+	
+	const contentContainer = document.createElement('div');
+    contentContainer.className = 'block-content';
 
+    // Добавляем содержимое блока в зависимости от типа
     switch (type) {
         case 'text':
-            block.innerHTML += `
+             contentContainer.innerHTML = `
                 <div class="text-controls">
                     <button class="button-all" onclick="insertParagraph(this)">Абзац</button>
                     <button class="button-all" onclick="insertOrderedList(this)">Нумерованный список</button>
                     <button class="button-all" onclick="insertUnorderedList(this)">Маркированный список</button>
                     <button class="button-all" onclick="insertHeader(this)">Заголовок</button>
                 </div>
-                <textarea id="text-block" placeholder="Введите текст"></textarea>`;
+                <textarea class="text-block" placeholder="Введите текст"></textarea>`;
             break;
+            
         case 'row-gallery':
-            block.innerHTML += `<div class="row-gallery"></div>
-                               <button class="button-all" onclick="addImageRow(this)">+Добавить картинку в ряду</button>`;
+            contentContainer.innerHTML += `<div class="row-gallery"></div>
+                             <button class="button-all" onclick="addImageRow(this)">+Добавить картинку в ряду</button>`;
             break;
+            
         case 'column-gallery':
-            block.innerHTML += createColumnGalleryBlock();
+            contentContainer.innerHTML += createColumnGalleryBlock();
             break;
+            
         case 'single-media':
-            block.innerHTML += `
+            contentContainer.innerHTML += `
                 <div class="single-media-block">
                     <div class="left-column">
-                        <select id="change" onchange="changeMediaType(this)">
+                        <select class="media-type-select" onchange="changeMediaType(this)">
                             <option value="image">Картинка</option>
                             <option value="video">Видео</option>
                         </select>
@@ -201,6 +209,7 @@ function addBlock(type) {
             break;
     }
 
+    block.appendChild(contentContainer);
     container.appendChild(block);
 }
 
