@@ -1,15 +1,29 @@
 // Инициализация и обработка событий
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Назначаем обработчик события на кнопку закрытия
-    document.getElementById('closemodal').addEventListener('click', closeImagePreview);
+    // Обработчики для модалки превью изображения
+    document.getElementById('closemodal').addEventListener('click', function() {
+        closeModal('image-preview-modal', 'image-preview-overlay');
+    });
 
-    // Закрытие модального окна при клике вне области модалки
-    document.getElementById('image-preview-overlay').addEventListener('click', function (event) {
-        if (event.target === this) { // Проверяем, что клик был именно по оверлею
-            closeImagePreview();
+    document.getElementById('image-preview-overlay').addEventListener('click', function(event) {
+        if (event.target === this) {
+            closeModal('image-preview-modal', 'image-preview-overlay');
         }
     });
+
+    // Обработчики для модалки информации о блоке
+    document.getElementById('close-block-info-modal').addEventListener('click', function() {
+        closeModal('block-info-modal', 'block-info-overlay');
+    });
+
+    document.getElementById('block-info-overlay').addEventListener('click', function(event) {
+        if (event.target === this) {
+            closeModal('block-info-modal', 'block-info-overlay');
+        }
+    });
+});
+
 
     // Обработчик для таба "Предпросмотр веб"
    const previewWebTab = document.querySelector('.tab[data-tab="preview-web"]');
@@ -96,7 +110,26 @@ if (previewMobTab) {
     // По умолчанию показываем конструктор
     document.querySelector('#top-bar .tab[data-tab="constructor"]').classList.add('active');
     document.getElementById('constructor-content').classList.add('active');
-});
+
+
+function showBlockInfo(button) {
+    const blockElement = button.closest('.block');
+    if (!blockElement) return;
+
+    const blockType = blockElement.getAttribute('data-type');
+    if (!blockType || !blockInfoTexts[blockType]) {
+        alert('Информация для этого типа блока не найдена.');
+        return;
+    }
+
+    // Используем innerHTML вместо textContent для интерпретации HTML-тегов
+    document.getElementById('block-info-content').innerHTML = blockInfoTexts[blockType];
+
+    document.getElementById('block-info-overlay').style.display = 'block';
+    document.getElementById('block-info-modal').style.display = 'block';
+}
+
+
 
 // Функции для работы с блоками
 
@@ -132,6 +165,9 @@ function addBlock(type) {
     const controls = document.createElement('div');
     controls.className = 'block-controls';
     controls.innerHTML = `
+	<button class="block-control-btn info-btn" onclick="showBlockInfo(this)" title="Информация о блоке">
+        <img src="icon/инфо.png" alt="i" class="control-icon">
+    </button>
         <button class="block-control-btn move-up" onclick="moveBlockUp(this)" title="Переместить вверх">
             <img src="icon/вверх.png" alt="↑" class="control-icon">
         </button>
@@ -743,11 +779,13 @@ function openImagePreview(url) {
     };
 }
 
-function closeImagePreview() {
-    const modal = document.getElementById('image-preview-modal');
-    const overlay = document.getElementById('image-preview-overlay');
-    modal.style.display = 'none'; // Скрываем модальное окно
-    overlay.style.display = 'none'; // Скрываем оверлей
+function closeModal(modalId, overlayId) {
+    const modal = document.getElementById(modalId);
+    const overlay = document.getElementById(overlayId);
+    if (modal && overlay) { // Проверка на существование элементов
+        modal.style.display = 'none';
+        overlay.style.display = 'none';
+    }
 }
 
 // Функции для работы с табами

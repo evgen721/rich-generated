@@ -79,6 +79,7 @@ body {
     align-items: center;
     background-color: #34495e;
     padding: 10px;
+	border-radius: 0 0 8px 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     position: sticky; 
     top: 60px;
@@ -204,6 +205,8 @@ body {
 
 			
 /* Стили для модальных окон и оверлеев */
+
+
 		
 .modal {
             display: none;
@@ -216,6 +219,7 @@ body {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             z-index: 1000;
             width: 700px;
+			border-radius: 8px;
         }
 		
 .modal img {
@@ -238,6 +242,19 @@ body {
             background: rgba(0, 0, 0, 0.5);
             z-index: 999;
         }
+		
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+
 
 #block-type { 
             width: 50%;
@@ -246,7 +263,7 @@ body {
             border-radius: 4px;
 }
 		
-.image-preview-modal {
+.image-preview-modal  {
     display: none;
     position: fixed;
     top: 50%;
@@ -259,6 +276,7 @@ body {
     max-width: 90%;
     max-height: 90%;
     overflow: auto;
+	border-radius: 8px;
 }		
 		
 .image-preview-modal img {
@@ -269,7 +287,7 @@ body {
 	margin-bottom: 15px;
 }
 
-.image-preview-overlay {
+.image-preview-overlay, .block-info-overlay {
     display: none;
     position: fixed;
     top: 0;
@@ -278,6 +296,27 @@ body {
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     z-index: 1000;
+}
+
+.block-info-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    max-width: 800px;
+    width: 90%;
+    border-radius: 8px;
+}
+
+#block-info-content {
+    padding: 10px;
+    line-height: 1.5;
+    color: #333;
 }
 
 /* iframe для предпросмотра */
@@ -609,4 +648,27 @@ body {
 
 .required-placeholder::placeholder {
     color: red;
+}
+
+.image-requirements {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    font-size: 0.9em;
+}
+
+.image-requirements th,
+.image-requirements td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.image-requirements thead tr {
+    background-color: #f5f5f5; /* Подложка для шапки */
+    font-weight: 600;
+}
+
+.image-requirements tbody tr:hover {
+    background-color: #f9f9f9; /* Легкий ховер-эффект */
 }
