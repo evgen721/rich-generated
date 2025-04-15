@@ -229,10 +229,22 @@ function addBlock(type) {
                             </div>
                             <div class="width-and-checkbox-container">
                                 <div class="width-container">
-                                    <input type="number" placeholder="Ширина % (необязательно)" min="1" max="100">
+								<span class="width-label">Ширина картинки</span>
+                                      <select class="width-select">                                
+                                <option value="10">10%</option>
+                                <option value="20">20%</option>
+                                <option value="30">30%</option>
+                                <option value="40">40%</option>
+                                <option value="50">50%</option>
+                                <option value="60">60%</option>
+                                <option value="70">70%</option>
+                                <option value="80">80%</option>
+                                <option value="90">90%</option>
+								<option value="100" selected>100% (по умолчанию)</option>
+                            </select>						
                                 </div>
                                 <label>
-                                    <input type="checkbox" class="checkbox" onchange="toggleWidthField(this)"> Во всю ширину (необязательно)
+                                    <input type="checkbox" class="checkbox" onchange="toggleWidthField(this)"> Растянуть во всю ширину (необязательно)
                                 </label>
                             </div>
                         </div>
@@ -289,12 +301,12 @@ function updateBlockNumbers() {
 
 
 function toggleWidthField(checkbox) {
-    const widthInput = checkbox.closest('.single-media-block').querySelector('.width-container input');
+    const widthSelect = checkbox.closest('.single-media-block').querySelector('.width-select');
     if (checkbox.checked) {
-        widthInput.disabled = true;
-        widthInput.value = '';
+        widthSelect.disabled = true;
+        widthSelect.value = '100'; // Сбрасываем на значение по умолчанию
     } else {
-        widthInput.disabled = false;
+        widthSelect.disabled = false;
     }
 }
 
@@ -309,20 +321,29 @@ function createColumnItemHTML() {
                 <div class="url-container">
                     <input type="text" placeholder="URL*" oninput="updateImagePreview(this)" class="required-placeholder">
                 </div>
-				<div class="media-controls-container">
-				    <div class="new-container">
-                         <div class="image-preview-container" onclick="openImagePreview(this.querySelector('.image-preview').src)">
-                         <img class="image-preview" src="" alt="Превью">
-                         </div>
-                         <div class="image-size"></div>
-						 </div>
-                         <div class="width-and-checkbox-container">
-                            <div class="width-container">
-                                <input type="number" placeholder="Ширина % (необязательно)" min="1" max="100">
-                            </div>
-                         </div>           				
+                <div class="media-controls-container">
+                    <div class="new-container">
+                        <div class="image-preview-container" onclick="openImagePreview(this.querySelector('.image-preview').src)">
+                            <img class="image-preview" src="" alt="Превью">
+                        </div>
+                        <div class="image-size"></div>
                     </div>
+                    <div class="width-and-checkbox-container">
+                        <div class="width-container">
+                            <select>                               
+                                <option value="20">20%</option>
+                                <option value="30">30%</option>
+                                <option value="40">40%</option>
+								<option value="" selected>50% (по умолчанию)</option>
+                                <option value="60">60%</option>
+                                <option value="70">70%</option>
+                                <option value="80">80%</option>
+                            </select>
+							 <span class="width-label">Ширина колонки с картинкой</span>
+                        </div>
+                    </div>           				
                 </div>
+            </div>
             <div class="right-column">
                 <input type="text" placeholder="Заголовок">
                 <textarea placeholder="Текст*" class="required-placeholder"></textarea>
@@ -577,49 +598,49 @@ function generateDescription() {
                 break;
 
             case 'column-gallery':
-                const columnItems = block.querySelectorAll('.column-item');
-                if (columnItems.length === 0) {
-                    errors.push(`Блок №${blockNumber} (${blockName}): нет добавленных элементов`);
-                    isValid = false;
+    const columnItems = block.querySelectorAll('.column-item');
+    if (columnItems.length === 0) {
+        errors.push(`Блок №${blockNumber} (${blockName}): нет добавленных элементов`);
+        isValid = false;
+    } else {
+        generatedHTML += `<div data-rich-type="column-gallery">\n`;
+        
+        columnItems.forEach((item, colIndex) => {
+            const url = item.querySelector('.url-container input[type="text"]').value.trim();
+            const text = item.querySelector('.right-column textarea').value.trim();
+            const title = item.querySelector('.right-column input[type="text"]').value.trim();
+            const position = item.querySelector('.left-column select').value;
+            const widthSelect = item.querySelector('.width-container select');
+            const width = widthSelect ? widthSelect.value.trim() : '';
+
+            if (!url) {
+                errors.push(`Блок №${blockNumber} (${blockName}), элемент ${colIndex + 1}: не заполнено поле "URL"`);
+                isValid = false;
+            }
+            if (!text) {
+                errors.push(`Блок №${blockNumber} (${blockName}), элемент ${colIndex + 1}: не заполнено поле "Текст"`);
+                isValid = false;
+            }
+
+            if (url && text) {
+                if (position === 'left') {
+                    generatedHTML += `<div>\n<img src="${url}" alt="Пример изображения"`;
+                    if (width) generatedHTML += ` style="width: ${width}%"`;
+                    generatedHTML += `>\n<div>\n`;
+                    if (title) generatedHTML += `<div data-block="title">${title}</div>\n`;
+                    generatedHTML += `<div data-block="text">${text}</div>\n</div>\n</div>\n`;
                 } else {
-                    generatedHTML += `<div data-rich-type="column-gallery">\n`;
-                    
-                    columnItems.forEach((item, colIndex) => {
-                        const url = item.querySelector('.url-container input[type="text"]').value.trim();
-                        const text = item.querySelector('.right-column textarea').value.trim();
-                        const title = item.querySelector('.right-column input[type="text"]').value.trim();
-                        const position = item.querySelector('.left-column select').value;
-                        const widthInput = item.querySelector('.width-container input[type="number"]');
-                        const width = widthInput ? widthInput.value.trim() : '';
-
-                        if (!url) {
-                            errors.push(`Блок №${blockNumber} (${blockName}), элемент ${colIndex + 1}: не заполнено поле "URL"`);
-                            isValid = false;
-                        }
-                        if (!text) {
-                            errors.push(`Блок №${blockNumber} (${blockName}), элемент ${colIndex + 1}: не заполнено поле "Текст"`);
-                            isValid = false;
-                        }
-
-                        if (url && text) {
-                            if (position === 'left') {
-                                generatedHTML += `<div>\n<img src="${url}" alt="Пример изображения"`;
-                                if (width) generatedHTML += ` style="width: ${width}%"`;
-                                generatedHTML += `>\n<div>\n`;
-                                if (title) generatedHTML += `<div data-block="title">${title}</div>\n`;
-                                generatedHTML += `<div data-block="text">${text}</div>\n</div>\n</div>\n`;
-                            } else {
-                                generatedHTML += `<div>\n<div>\n`;
-                                if (title) generatedHTML += `<div data-block="title">${title}</div>\n`;
-                                generatedHTML += `<div data-block="text">${text}</div>\n</div>\n<img src="${url}" alt="Пример изображения"`;
-                                if (width) generatedHTML += ` style="width: ${width}%"`;
-                                generatedHTML += `>\n</div>\n`;
-                            }
-                        }
-                    });
-                    
-                    generatedHTML += `</div>\n`;
+                    generatedHTML += `<div>\n<div>\n`;
+                    if (title) generatedHTML += `<div data-block="title">${title}</div>\n`;
+                    generatedHTML += `<div data-block="text">${text}</div>\n</div>\n<img src="${url}" alt="Пример изображения"`;
+                    if (width) generatedHTML += ` style="width: ${width}%"`;
+                    generatedHTML += `>\n</div>\n`;
                 }
+            }
+        });
+        
+        generatedHTML += `</div>\n`;
+    }
                 break;
 
             case 'single-media':
@@ -628,7 +649,8 @@ function generateDescription() {
                 const text = block.querySelector('.right-column textarea')?.value || '';
                 const mediaType = block.querySelector('select').value;
                 const isWide = block.querySelector('input[type="checkbox"]').checked;
-                const width = block.querySelector('.width-container input')?.value || '';
+                const widthSelect = block.querySelector('.width-select');
+                const width = widthSelect ? widthSelect.value : '100';
 
                 if (!url.trim()) {
                     errors.push(`Блок №${blockNumber} (${blockName}): не заполнено поле "URL"`);
@@ -637,16 +659,16 @@ function generateDescription() {
                     if (mediaType === 'image') {
                         generatedHTML += `<div data-rich-type="single-media" ${isWide ? 'data-view="wide"' : ''}>\n`;
                         generatedHTML += `  <img src="${url}" alt="Пример изображения"`;
-                        if (width && !isWide) generatedHTML += ` style="width: ${width}%"`;
+                        if (width !== '100' && !isWide) generatedHTML += ` style="width: ${width}%"`;
                         generatedHTML += `>\n`;
                         if (title) generatedHTML += `  <div data-block="title">${title}</div>\n`;
-                        if (text) generatedHTML += `  <div data-block="text">${text}</div>\n`;
+                       if (text) generatedHTML += `  <div data-block="text">${text}</div>\n`;
                         generatedHTML += `</div>\n`;
                     } else {
                         generatedHTML += `<div data-rich-type="single-media">\n`;
                         generatedHTML += `  <video controls><source src="${url}" type="video/mp4">Видео</video>\n`;
                         if (title) generatedHTML += `  <div data-block="title">${title}</div>\n`;
-                        if (text) generatedHTML += `  <div data-block="text">${text}</div>\n`;
+                       if (text) generatedHTML += `  <div data-block="text">${text}</div>\n`;
                         generatedHTML += `</div>\n`;
                     }
                 }

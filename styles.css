@@ -518,6 +518,12 @@ body {
     resize: vertical;
     min-height: 265px;
 }		
+
+.width-label {
+    margin-left: 8px;
+    font-size: 14px;
+    color: #555;
+}
 		
 
 /* Стили для блока картинка во всю ширину */
