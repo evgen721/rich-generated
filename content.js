@@ -213,7 +213,7 @@ function addBlock(type) {
             contentContainer.innerHTML += `
                 <div class="single-media-block">
                     <div class="left-column">
-                        <select class="media-type-select" onchange="changeMediaType(this)">
+                        <select class="media-type-select" onchange="toggleWidthField(this)">
                             <option value="image">Картинка</option>
                             <option value="video">Видео</option>
                         </select>
@@ -299,14 +299,29 @@ function updateBlockNumbers() {
     });
 }
 
-
-function toggleWidthField(checkbox) {
-    const widthSelect = checkbox.closest('.single-media-block').querySelector('.width-select');
-    if (checkbox.checked) {
+function toggleWidthField(element) {
+    // element может быть как checkbox, так и select
+    const mediaBlock = element.closest('.single-media-block');
+    const widthSelect = mediaBlock.querySelector('.width-select');
+    const mediaTypeSelect = mediaBlock.querySelector('.media-type-select');
+    const checkbox = mediaBlock.querySelector('.checkbox');
+    
+    // Если выбран тип "видео", блокируем оба элемента
+    if (mediaTypeSelect.value === 'video') {
         widthSelect.disabled = true;
-        widthSelect.value = '100'; // Сбрасываем на значение по умолчанию
-    } else {
-        widthSelect.disabled = false;
+        checkbox.disabled = true;
+        widthSelect.value = '100';
+        checkbox.checked = false;
+    } 
+    // Если выбран тип "изображение", работаем как раньше
+    else {
+        if (checkbox.checked) {
+            widthSelect.disabled = true;
+            widthSelect.value = '100';
+        } else {
+            widthSelect.disabled = false;
+        }
+        checkbox.disabled = false;
     }
 }
 
