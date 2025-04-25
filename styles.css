@@ -121,18 +121,84 @@ body {
     font-size: 12px;
     border-radius: 5px;
     cursor: pointer;
-    transition: all 0.1s;
+    transition: all 0.2s ease;
     box-shadow: inset 0 1px 0 #ffffff;
+    position: relative;
+    margin: 2px;
+    color: #333;
+    
+    /* Отключаем стандартный тултип */
+    overflow: visible;
+}
+
+/* Кастомный тултип через data-атрибут */
+.button-all[data-tooltip] {
+    position: relative;
+}
+
+.button-all[data-tooltip]::after,
+.button-all[data-tooltip]::before {
+    opacity: 0;
+    pointer-events: none;
+    transition: 
+        opacity 0.3s ease 0.4s, /* Задержка 0.4 секунды перед появлением */
+        transform 0.3s ease 0.4s; /* Плавное движение с задержкой */
+    transform: translateX(10%) translateY(10px); /* Начальное смещение вниз */
+}
+
+.button-all[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-26px);
+    background-color: #34495e;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+    min-width: max-content;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+    will-change: transform, opacity;
+}
+
+/* Стрелка тултипа */
+.button-all[data-tooltip]::before {
+    content: "";
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(10%) translateY(10px);
+    border-width: 5px;
+    border-style: solid;
+    border-color: #34495e transparent transparent transparent;
+    z-index: 1001;
+}
+
+.button-all[data-tooltip]:hover::after,
+.button-all[data-tooltip]:hover::before {
+    opacity: 1;
+}
+
+/* Остальные состояния кнопки */
+.button-all:hover {
+    background: linear-gradient(to bottom, #e3e3e3, #d0d0d0);
+    border-color: #999;
+    box-shadow: inset 0 1px 0 #f0f0f0, 0 1px 2px rgba(0,0,0,0.1);
+    transform: translateY(-1px);
+}
+
+.button-all:active {
+    background: linear-gradient(to bottom, #d0d0d0, #c0c0c0);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    transform: translateY(0);
 }
 
 .button-add-colum-image {
         width: 9%;
     }
-
-.button-all:hover {
-    background: #dddddd;
-    border-color: #555555;
-}
 
 
 .image-block-controls { /* кнопки влево-вправо удалить */

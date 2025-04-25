@@ -190,18 +190,31 @@ function addBlock(type) {
     // Добавляем содержимое блока в зависимости от типа
     switch (type) {
         case 'text':
-             contentContainer.innerHTML = `
-                <div class="text-controls">
-                    <button class="button-all" onclick="insertHeader(this)">Заголовок</button>
-					<button class="button-all" onclick="insertParagraph(this)">Абзац</button>
-                    <button class="button-all" onclick="insertOrderedList(this)">Нумерованный список</button>
-                    <button class="button-all" onclick="insertUnorderedList(this)">Маркированный список</button>
-                    <button class="button-all" onclick="insertGiperURL(this)">Гиперссылка</button>
-					<button class="button-all" onclick="makeBold(this)">Полужирный</button>
-                    <button class="button-all" onclick="makeItalic(this)">Курсив</button>
-                </div>
-                <textarea class="text-block" placeholder="Введите текст"></textarea>`;
-            break;
+  contentContainer.innerHTML = `
+    <div class="text-controls">
+      <button class="button-all" onclick="insertHeader(this)" 
+              data-tooltip="Вставить <p><b>Заголовок</b></p> или обернуть выделенный текст в заголовок">Заголовок</button>
+      
+      <button class="button-all" onclick="insertParagraph(this)" 
+              data-tooltip="Вставить теги абзаца <p></p> или обернуть выделенный текст в абзац">Абзац</button>
+      
+      <button class="button-all" onclick="insertOrderedList(this)" 
+              data-tooltip="Вставить список с номерами">Нумерованный список</button>
+      
+      <button class="button-all" onclick="insertUnorderedList(this)" 
+              data-tooltip="Вставить список с пунтками">Маркированный список</button>
+      
+      <button class="button-all" onclick="insertGiperURL(this)" 
+              data-tooltip="Вставить гиперссылку <a href='...'>ссылка</a>">Гиперссылка</button>
+      
+      <button class="button-all" onclick="makeBold(this)" 
+              data-tooltip="Обернуть выделенный текст в <b></b>">Полужирный</button>
+      
+      <button class="button-all" onclick="makeItalic(this)" 
+              data-tooltip="Обернуть выделенный текст в <i></i>">Курсив</button>
+    </div>
+    <textarea class="text-block" placeholder="Введите текст"></textarea>`;
+  break;
             
         case 'row-gallery':
             contentContainer.innerHTML += `<div class="row-gallery"></div>
