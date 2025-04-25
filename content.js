@@ -192,10 +192,11 @@ function addBlock(type) {
         case 'text':
              contentContainer.innerHTML = `
                 <div class="text-controls">
-                    <button class="button-all" onclick="insertParagraph(this)">Абзац</button>
+                    <button class="button-all" onclick="insertHeader(this)">Заголовок</button>
+					<button class="button-all" onclick="insertParagraph(this)">Абзац</button>
                     <button class="button-all" onclick="insertOrderedList(this)">Нумерованный список</button>
                     <button class="button-all" onclick="insertUnorderedList(this)">Маркированный список</button>
-                    <button class="button-all" onclick="insertHeader(this)">Заголовок</button>
+                    <button class="button-all" onclick="insertGiperURL(this)">Гиперссылка</button>
                 </div>
                 <textarea class="text-block" placeholder="Введите текст"></textarea>`;
             break;
@@ -548,6 +549,14 @@ function insertHeader(button) {
     const block = button.closest('.block');
     const textarea = block.querySelector('textarea');
     const newContent = '<p><b>Заголовок</b></p>';
+    textarea.value += textarea.value ? `\n${newContent}` : newContent; // Проверка на пустоту
+    textarea.focus(); // Фокусируем textarea
+}
+
+function insertGiperURL(button) {
+    const block = button.closest('.block');
+    const textarea = block.querySelector('textarea');
+    const newContent = '<a href="ссылка">Текст у ссылки</a>';
     textarea.value += textarea.value ? `\n${newContent}` : newContent; // Проверка на пустоту
     textarea.focus(); // Фокусируем textarea
 }
