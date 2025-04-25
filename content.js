@@ -524,41 +524,61 @@ function updateBlockNumbers() {
 function insertParagraph(button) {
     const block = button.closest('.block');
     const textarea = block.querySelector('textarea');
-    const newContent = '<p></p>';
-    textarea.value += textarea.value ? `\n${newContent}` : newContent; // Проверка на пустоту
-    textarea.focus(); // Фокусируем textarea
+	const cursorPosition = textarea.selectionStart;
+	const textBefore = textarea.value.substring(0, cursorPosition);
+    const textAfter = textarea.value.substring(cursorPosition);
+	textarea.value = textBefore + '<p></p>' + textAfter;
+    const newCursorPosition = cursorPosition + '<p></p>'.length;
+    textarea.setSelectionRange(newCursorPosition, newCursorPosition);
+    textarea.focus();
 }
 
 function insertOrderedList(button) {
     const block = button.closest('.block');
     const textarea = block.querySelector('textarea');
-    const newContent = '<ol>\n<li>пункт1</li>\n<li>пункт2</li>\n<li>пункт3</li>\n</ol>';
-    textarea.value += textarea.value ? `\n${newContent}` : newContent; // Проверка на пустоту
-    textarea.focus(); // Фокусируем textarea
+	const cursorPosition = textarea.selectionStart;
+	const textBefore = textarea.value.substring(0, cursorPosition);
+    const textAfter = textarea.value.substring(cursorPosition);
+	textarea.value = textBefore + '<ol>\n<li>пункт1</li>\n<li>пункт2</li>\n<li>пункт3</li>\n</ol>' + textAfter;
+    const newCursorPosition = cursorPosition + '<ol>\n<li>пункт1</li>\n<li>пункт2</li>\n<li>пункт3</li>\n</ol>'.length;
+    textarea.setSelectionRange(newCursorPosition, newCursorPosition);
+    textarea.focus();
 }
 
 function insertUnorderedList(button) {
     const block = button.closest('.block');
     const textarea = block.querySelector('textarea');
-    const newContent = '<ul>\n<li>пункт1</li>\n<li>пункт2</li>\n<li>пункт3</li>\n</ul>';
-    textarea.value += textarea.value ? `\n${newContent}` : newContent; // Проверка на пустоту
-    textarea.focus(); // Фокусируем textarea
+	const cursorPosition = textarea.selectionStart;
+	const textBefore = textarea.value.substring(0, cursorPosition);
+    const textAfter = textarea.value.substring(cursorPosition);
+	textarea.value = textBefore + '<ul>\n<li>пункт1</li>\n<li>пункт2</li>\n<li>пункт3</li>\n</ul>' + textAfter;
+    const newCursorPosition = cursorPosition + '<ul>\n<li>пункт1</li>\n<li>пункт2</li>\n<li>пункт3</li>\n</ul>'.length;
+    textarea.setSelectionRange(newCursorPosition, newCursorPosition);
+    textarea.focus();
 }
 
 function insertHeader(button) {
     const block = button.closest('.block');
     const textarea = block.querySelector('textarea');
-    const newContent = '<p><b>Заголовок</b></p>';
-    textarea.value += textarea.value ? `\n${newContent}` : newContent; // Проверка на пустоту
-    textarea.focus(); // Фокусируем textarea
+	const cursorPosition = textarea.selectionStart;
+	const textBefore = textarea.value.substring(0, cursorPosition);
+    const textAfter = textarea.value.substring(cursorPosition);
+	textarea.value = textBefore + '<p><b>Заголовок</b></p>' + textAfter;
+    const newCursorPosition = cursorPosition + '<p><b>Заголовок</b></p>'.length;
+    textarea.setSelectionRange(newCursorPosition, newCursorPosition);
+    textarea.focus();
 }
 
 function insertGiperURL(button) {
     const block = button.closest('.block');
     const textarea = block.querySelector('textarea');
-    const newContent = '<a href="ссылка">Текст у ссылки</a>';
-    textarea.value += textarea.value ? `\n${newContent}` : newContent; // Проверка на пустоту
-    textarea.focus(); // Фокусируем textarea
+	const cursorPosition = textarea.selectionStart;
+	const textBefore = textarea.value.substring(0, cursorPosition);
+    const textAfter = textarea.value.substring(cursorPosition);
+	textarea.value = textBefore + '<a href="ссылка">Текст у ссылки</a>' + textAfter;
+    const newCursorPosition = cursorPosition + '<a href="ссылка">Текст у ссылки</a>'.length;
+    textarea.setSelectionRange(newCursorPosition, newCursorPosition);
+    textarea.focus();
 }
 
 
