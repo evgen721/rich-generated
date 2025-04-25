@@ -197,6 +197,8 @@ function addBlock(type) {
                     <button class="button-all" onclick="insertOrderedList(this)">Нумерованный список</button>
                     <button class="button-all" onclick="insertUnorderedList(this)">Маркированный список</button>
                     <button class="button-all" onclick="insertGiperURL(this)">Гиперссылка</button>
+					<button class="button-all" onclick="makeBold(this)">Полужирный</button>
+                    <button class="button-all" onclick="makeItalic(this)">Курсив</button>
                 </div>
                 <textarea class="text-block" placeholder="Введите текст"></textarea>`;
             break;
@@ -524,12 +526,24 @@ function updateBlockNumbers() {
 function insertParagraph(button) {
     const block = button.closest('.block');
     const textarea = block.querySelector('textarea');
-	const cursorPosition = textarea.selectionStart;
-	const textBefore = textarea.value.substring(0, cursorPosition);
-    const textAfter = textarea.value.substring(cursorPosition);
-	textarea.value = textBefore + '<p></p>' + textAfter;
-    const newCursorPosition = cursorPosition + '<p></p>'.length;
-    textarea.setSelectionRange(newCursorPosition, newCursorPosition);
+    const startPos = textarea.selectionStart;
+    const endPos = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(startPos, endPos);
+    
+    if (selectedText) {
+        const textBefore = textarea.value.substring(0, startPos);
+        const textAfter = textarea.value.substring(endPos);
+        textarea.value = textBefore + '<p>' + selectedText + '</p>' + textAfter;
+        const newCursorPos = startPos + '<p>'.length + selectedText.length + '</p>'.length;
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+    } else {
+        const textBefore = textarea.value.substring(0, startPos);
+        const textAfter = textarea.value.substring(startPos);
+        textarea.value = textBefore + '<p></p>' + textAfter;
+        const newCursorPos = startPos + '<p>'.length;
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+    }
+    
     textarea.focus();
 }
 
@@ -560,12 +574,24 @@ function insertUnorderedList(button) {
 function insertHeader(button) {
     const block = button.closest('.block');
     const textarea = block.querySelector('textarea');
-	const cursorPosition = textarea.selectionStart;
-	const textBefore = textarea.value.substring(0, cursorPosition);
-    const textAfter = textarea.value.substring(cursorPosition);
-	textarea.value = textBefore + '<p><b>Заголовок</b></p>' + textAfter;
-    const newCursorPosition = cursorPosition + '<p><b>Заголовок</b></p>'.length;
-    textarea.setSelectionRange(newCursorPosition, newCursorPosition);
+    const startPos = textarea.selectionStart;
+    const endPos = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(startPos, endPos);
+    
+    if (selectedText) {
+        const textBefore = textarea.value.substring(0, startPos);
+        const textAfter = textarea.value.substring(endPos);
+        textarea.value = textBefore + '<p><b>' + selectedText + '</b></p>' + textAfter;
+        const newCursorPos = startPos + '<p><b>'.length + selectedText.length + '</b></p>'.length;
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+    } else {
+        const textBefore = textarea.value.substring(0, startPos);
+        const textAfter = textarea.value.substring(startPos);
+        textarea.value = textBefore + '<p><b>Заголовок</b></p>' + textAfter;
+        const newCursorPos = startPos + '<p><b>Заголовок</b></p>'.length;
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+    }
+    
     textarea.focus();
 }
 
@@ -581,6 +607,47 @@ function insertGiperURL(button) {
     textarea.focus();
 }
 
+function makeBold(button) {
+    const block = button.closest('.block');
+    const textarea = block.querySelector('textarea');
+    const startPos = textarea.selectionStart;
+    const endPos = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(startPos, endPos);
+
+    if (!selectedText) return; // Если нет выделения — ничего не делаем
+
+    const textBefore = textarea.value.substring(0, startPos);
+    const textAfter = textarea.value.substring(endPos);
+    
+    // Оборачиваем выделенный текст в <b></b>
+    textarea.value = textBefore + '<b>' + selectedText + '</b>' + textAfter;
+    
+    // Устанавливаем курсор после закрывающего тега
+    const newCursorPos = startPos + '<b>'.length + selectedText.length + '</b>'.length;
+    textarea.setSelectionRange(newCursorPos, newCursorPos);
+    textarea.focus();
+}
+
+function makeItalic(button) {
+    const block = button.closest('.block');
+    const textarea = block.querySelector('textarea');
+    const startPos = textarea.selectionStart;
+    const endPos = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(startPos, endPos);
+
+    if (!selectedText) return; // Если нет выделения — ничего не делаем
+
+    const textBefore = textarea.value.substring(0, startPos);
+    const textAfter = textarea.value.substring(endPos);
+    
+    // Оборачиваем выделенный текст в <i></i>
+    textarea.value = textBefore + '<i>' + selectedText + '</i>' + textAfter;
+    
+    // Устанавливаем курсор после закрывающего тега
+    const newCursorPos = startPos + '<i>'.length + selectedText.length + '</i>'.length;
+    textarea.setSelectionRange(newCursorPos, newCursorPos);
+    textarea.focus();
+}
 
 let isDescriptionDirty = true; // Флаг для отслеживания изменений в блоках
 
