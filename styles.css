@@ -637,8 +637,6 @@ body {
 }
 
 
-/* Превью картинки по урлу */
-
 .media-controls-container {
     display: flex;
     align-items: flex-start;
@@ -650,29 +648,56 @@ body {
     flex-direction: column;
 }
 
+.controls-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
 .width-and-checkbox-container {
     display: flex;
-    align-items: center; /* Выравнивание по центру */
-    gap: 10px; /* Отступ между полем ширины и чекбоксом */
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
-.width-and-checkbox-container label {
-    font-size: 13px; /* Размер шрифта */
-    color: #333; /* Цвет текста (опционально) */
-    font-family: Arial, sans-serif; /* Шрифт (опционально) */
-	 align-items: center;
+.width-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.width-container input {
-    width: 190px; /* Ширина поля ввода */
+.width-container select {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
+.width-and-checkbox-container label {
+    font-size: 13px;
+    color: #333;
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.image-link-container input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+
+
 .checkbox {
     margin: 0;
 }
+
+/* Превью картинки по урлу */
 
 .image-preview-container {
     position: relative;
