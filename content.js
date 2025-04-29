@@ -262,8 +262,8 @@ function addBlock(type) {
                         </div>
                     </div>
                     <div class="right-column">
-                        <input type="text" placeholder="Заголовок (необязательно)">
-                        <textarea placeholder="Текст (необязательно)"></textarea>
+                        <input type="text" placeholder="Заголовок под картинкой (необязательно)">
+                        <textarea placeholder="Текст под картинкой (необязательно)"></textarea>
                     </div>
                 </div>`;
             break;
@@ -729,7 +729,7 @@ case 'row-gallery':
     }
     break;
 
-            case 'column-gallery':
+case 'column-gallery':
     const columnItems = block.querySelectorAll('.column-item');
     if (columnItems.length === 0) {
         errors.push(`Блок №${blockNumber} (${blockName}): нет добавленных элементов`);
@@ -759,11 +759,17 @@ case 'row-gallery':
                 if (position === 'left') {
                     generatedHTML += `<div>\n`;
 
-                    if (imageLink) generatedHTML += `<a href="${imageLink}">\n`;
-                    generatedHTML += `<img src="${url}" alt="Пример изображения"`;
-                    if (width) generatedHTML += ` style="width: ${width}%"`;
-                    generatedHTML += `>\n`;
-                    if (imageLink) generatedHTML += `</a>\n`;
+                    if (imageLink) {
+                        generatedHTML += `<div>\n<a href="${imageLink}">\n`;
+                        generatedHTML += `<img src="${url}" alt="Пример изображения"`;
+                        if (width) generatedHTML += ` style="width: ${width}%"`;
+                        generatedHTML += `>\n</a>\n</div>\n`;
+                    } else {
+                        generatedHTML += `<img src="${url}" alt="Пример изображения"`;
+                        if (width) generatedHTML += ` style="width: ${width}%"`;
+                        generatedHTML += `>\n`;
+                    }
+                    
                     generatedHTML += `<div>\n`;
                     if (title) generatedHTML += `<div data-block="title">${title}</div>\n`;
                     generatedHTML += `<div data-block="text">${text}</div>\n</div>\n</div>\n`;
@@ -772,11 +778,16 @@ case 'row-gallery':
                     if (title) generatedHTML += `<div data-block="title">${title}</div>\n`;
                     generatedHTML += `<div data-block="text">${text}</div>\n</div>\n`;
 
-                    if (imageLink) generatedHTML += `<a href="${imageLink}">\n`;
-                    generatedHTML += `<img src="${url}" alt="Пример изображения"`;
-                    if (width) generatedHTML += ` style="width: ${width}%"`;
-                    generatedHTML += `>\n`;
-                    if (imageLink) generatedHTML += `</a>\n`;
+                    if (imageLink) {
+                        generatedHTML += `<div>\n<a href="${imageLink}">\n`;
+                        generatedHTML += `<img src="${url}" alt="Пример изображения"`;
+                        if (width) generatedHTML += ` style="width: ${width}%"`;
+                        generatedHTML += `>\n</a>\n</div>\n`;
+                    } else {
+                        generatedHTML += `<img src="${url}" alt="Пример изображения"`;
+                        if (width) generatedHTML += ` style="width: ${width}%"`;
+                        generatedHTML += `>\n`;
+                    }
                     generatedHTML += `</div>\n`;
                 }
             }
