@@ -713,7 +713,7 @@ case 'row-gallery':
                     generatedHTML += `    <a href="${imageLink.trim()}">\n`;
                 }
                 
-                generatedHTML += `    <img src="${url}" alt="Пример изображения">\n`;
+                generatedHTML += `    <img src="${url}" alt="Картинка">\n`;
                 
                 if (imageLink.trim()) {
                     generatedHTML += `    </a>\n`;
@@ -761,11 +761,11 @@ case 'column-gallery':
 
                     if (imageLink) {
                         generatedHTML += `<div>\n<a href="${imageLink}">\n`;
-                        generatedHTML += `<img src="${url}" alt="Пример изображения"`;
+                        generatedHTML += `<img src="${url}" alt="Картинка"`;
                         if (width) generatedHTML += ` style="width: ${width}%"`;
                         generatedHTML += `>\n</a>\n</div>\n`;
                     } else {
-                        generatedHTML += `<img src="${url}" alt="Пример изображения"`;
+                        generatedHTML += `<img src="${url}" alt="Картинка"`;
                         if (width) generatedHTML += ` style="width: ${width}%"`;
                         generatedHTML += `>\n`;
                     }
@@ -780,11 +780,11 @@ case 'column-gallery':
 
                     if (imageLink) {
                         generatedHTML += `<div>\n<a href="${imageLink}">\n`;
-                        generatedHTML += `<img src="${url}" alt="Пример изображения"`;
+                        generatedHTML += `<img src="${url}" alt="Картинка"`;
                         if (width) generatedHTML += ` style="width: ${width}%"`;
                         generatedHTML += `>\n</a>\n</div>\n`;
                     } else {
-                        generatedHTML += `<img src="${url}" alt="Пример изображения"`;
+                        generatedHTML += `<img src="${url}" alt="Картинка"`;
                         if (width) generatedHTML += ` style="width: ${width}%"`;
                         generatedHTML += `>\n`;
                     }
@@ -818,7 +818,7 @@ case 'column-gallery':
                 generatedHTML += `  <a href="${imageLink}">\n`;
             }
             
-            generatedHTML += `  <img src="${url}" alt="Пример изображения"`;
+            generatedHTML += `  <img src="${url}" alt="Картинка"`;
             if (width !== '100' && !isWide) generatedHTML += ` style="width: ${width}%"`;
             generatedHTML += `>\n`;
             
