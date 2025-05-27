@@ -756,41 +756,29 @@ case 'column-gallery':
             }
 
             if (url && text) {
-                if (position === 'left') {
-                    generatedHTML += `<div>\n`;
+    if (position === 'left') {
+        generatedHTML += `<div>\n`;
+        generatedHTML += `<div${width ? ` style="width: ${width}%"` : ''}>\n`;
+        if (imageLink) generatedHTML += `<a href="${imageLink}">\n`;
+        generatedHTML += `<img src="${url}" alt="Картинка">\n`;
+        if (imageLink) generatedHTML += `</a>\n`;
+        generatedHTML += `</div>\n`;
+        
+        generatedHTML += `<div>\n`;
+        if (title) generatedHTML += `<div data-block="title">${title}</div>\n`;
+        generatedHTML += `<div data-block="text">${text}</div>\n</div>\n</div>\n`;
+    } else {
+        generatedHTML += `<div>\n<div>\n`;
+        if (title) generatedHTML += `<div data-block="title">${title}</div>\n`;
+        generatedHTML += `<div data-block="text">${text}</div>\n</div>\n`;
 
-                    if (imageLink) {
-                        generatedHTML += `<div>\n<a href="${imageLink}">\n`;
-                        generatedHTML += `<img src="${url}" alt="Картинка"`;
-                        if (width) generatedHTML += ` style="width: ${width}%"`;
-                        generatedHTML += `>\n</a>\n</div>\n`;
-                    } else {
-                        generatedHTML += `<img src="${url}" alt="Картинка"`;
-                        if (width) generatedHTML += ` style="width: ${width}%"`;
-                        generatedHTML += `>\n`;
-                    }
-                    
-                    generatedHTML += `<div>\n`;
-                    if (title) generatedHTML += `<div data-block="title">${title}</div>\n`;
-                    generatedHTML += `<div data-block="text">${text}</div>\n</div>\n</div>\n`;
-                } else {
-                    generatedHTML += `<div>\n<div>\n`;
-                    if (title) generatedHTML += `<div data-block="title">${title}</div>\n`;
-                    generatedHTML += `<div data-block="text">${text}</div>\n</div>\n`;
-
-                    if (imageLink) {
-                        generatedHTML += `<div>\n<a href="${imageLink}">\n`;
-                        generatedHTML += `<img src="${url}" alt="Картинка"`;
-                        if (width) generatedHTML += ` style="width: ${width}%"`;
-                        generatedHTML += `>\n</a>\n</div>\n`;
-                    } else {
-                        generatedHTML += `<img src="${url}" alt="Картинка"`;
-                        if (width) generatedHTML += ` style="width: ${width}%"`;
-                        generatedHTML += `>\n`;
-                    }
-                    generatedHTML += `</div>\n`;
-                }
-            }
+        generatedHTML += `<div${width ? ` style="width: ${width}%"` : ''}>\n`;
+        if (imageLink) generatedHTML += `<a href="${imageLink}">\n`;
+        generatedHTML += `<img src="${url}" alt="Картинка">\n`;
+        if (imageLink) generatedHTML += `</a>\n`;
+        generatedHTML += `</div>\n</div>\n`;
+    }
+}
         });
         
         generatedHTML += `</div>\n`;
