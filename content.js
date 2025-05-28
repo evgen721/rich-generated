@@ -1,28 +1,389 @@
 // Инициализация и обработка событий
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Обработчики для модалки превью изображения
-    document.getElementById('closemodal').addEventListener('click', function() {
-        closeModal('image-preview-modal', 'image-preview-overlay');
-    });
+ 
+ // Обработчики для модалок
+ 
+function closeModal(modalId, overlayId) {
+    document.getElementById(modalId).style.display = 'none';
+    document.getElementById(overlayId).style.display = 'none';
+}
 
-    document.getElementById('image-preview-overlay').addEventListener('click', function(event) {
-        if (event.target === this) {
-            closeModal('image-preview-modal', 'image-preview-overlay');
-        }
-    });
+const modals = [
+    { modal: 'image-preview-modal', overlay: 'image-preview-overlay', closeBtn: 'closemodal' },
+    { modal: 'block-info-modal', overlay: 'block-info-overlay', closeBtn: 'close-block-info-modal' },
+    { modal: 'import-modal', overlay: 'import-overlay', closeBtn: 'closemodal-import' },
+    { modal: 'modal', overlay: 'overlay', closeBtn: 'closemodal-block-type' }
+];
 
-    // Обработчики для модалки информации о блоке
-    document.getElementById('close-block-info-modal').addEventListener('click', function() {
-        closeModal('block-info-modal', 'block-info-overlay');
-    });
-
-    document.getElementById('block-info-overlay').addEventListener('click', function(event) {
-        if (event.target === this) {
-            closeModal('block-info-modal', 'block-info-overlay');
-        }
-    });
+modals.forEach(({modal, overlay, closeBtn}) => {
+    // Обработчик для кнопки закрытия
+    const closeButton = document.getElementById(closeBtn);
+    if (closeButton) {
+        closeButton.addEventListener('click', () => closeModal(modal, overlay));
+    }
+    
+    // Обработчик для клика по оверлею
+    const overlayElement = document.getElementById(overlay);
+    if (overlayElement) {
+        overlayElement.addEventListener('click', (event) => {
+            if (event.target === overlayElement) {
+                closeModal(modal, overlay);
+            }
+        });
+    }
 });
+
+    //  закрытие модалок по кнопке esc
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        modals.forEach(({modal, overlay}) => closeModal(modal, overlay));
+    }
+});
+
+	
+	
+	    // Модалка для импорта готового описания
+	document.getElementById('import-btn').addEventListener('click', function() {
+    document.getElementById('import-overlay').style.display = 'flex';
+	document.getElementById('import-modal').style.display = 'block';
+    document.getElementById('import-textarea').value = '';
+    document.getElementById('import-textarea').focus();
+});
+
+
+
+document.getElementById('confirm-import').addEventListener('click', function() {
+    const html = document.getElementById('import-textarea').value.trim();
+    if (!html) {
+        alert('Поле не может быть пустым!');
+        return;
+    }
+    
+    try {
+        importDescription(html);
+        closeModal('import-modal', 'import-overlay'); // Используем универсальную функцию
+    } catch (error) {
+        alert('Ошибка импорта: ' + error.message);
+    }
+});
+		
+});
+
+// Функция для импорта описания
+function importDescription(html) {
+    document.getElementById('blocks-container').innerHTML = '';
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    let currentTextContent = '';
+    
+    Array.from(doc.body.childNodes).forEach(node => {
+        if (node.nodeType === Node.ELEMENT_NODE && node.hasAttribute('data-rich-type')) {
+            if (currentTextContent.trim()) {
+                addTextBlock(currentTextContent);
+                currentTextContent = '';
+            }
+            processElement(node);
+        } else {
+            const nodeContent = node.nodeType === Node.ELEMENT_NODE ? node.outerHTML : node.textContent;
+            if (nodeContent.trim()) {
+                currentTextContent += nodeContent + '\n';
+            }
+        }
+    });
+    
+    if (currentTextContent.trim()) {
+        addTextBlock(currentTextContent);
+    }
+    
+    updateBlockNumbers();
+}
+
+function processElement(element) {
+    const richType = element.getAttribute('data-rich-type');
+    
+    if (richType) {
+        switch (richType) {
+            case 'text':
+                addTextBlock(element.innerHTML);
+                break;
+                
+            case 'row-gallery':
+                const rowGalleryBlock = addBlockDirectly('row-gallery');
+                const imagesContainer = element.querySelector('[data-block="images"]');
+                
+                if (imagesContainer) {
+                    Array.from(imagesContainer.children).forEach(imgBlock => {
+                        const img = imgBlock.querySelector('img');
+                        const title = imgBlock.querySelector('[data-block="title"]');
+                        const text = imgBlock.querySelector('[data-block="text"]');
+                        const link = imgBlock.querySelector('a');
+                        
+                        if (img) {
+                            const addBtn = rowGalleryBlock.querySelector('.button-all');
+                            addBtn.click();
+                            
+                            const imageBlocks = rowGalleryBlock.querySelectorAll('.image-block');
+                            const lastImageBlock = imageBlocks[imageBlocks.length - 1];
+                            
+                            lastImageBlock.querySelector('.url-container input').value = img.getAttribute('src') || '';
+                            if (title) lastImageBlock.querySelectorAll('input[type="text"]')[1].value = title.textContent;
+                            if (text) lastImageBlock.querySelector('textarea').value = text.textContent;
+                            if (link) lastImageBlock.querySelector('.image-link-input').value = link.getAttribute('href') || '';
+                            
+                            updateImagePreview(lastImageBlock.querySelector('.url-container input'));
+                        }
+                    });
+                }
+                break;
+                
+            case 'column-gallery':
+    const columnGalleryBlock = addBlockDirectly('column-gallery');
+    
+    Array.from(element.children).forEach((columnItem, index) => {
+
+        if (index > 0) {
+            columnGalleryBlock.querySelector('.button-add-colum-image').click();
+        }
+        
+        const columnItems = columnGalleryBlock.querySelectorAll('.column-item');
+        const currentColumnItem = columnItems[index];
+        
+        const firstDiv = columnItem.children[0];
+        const isImageFirst = firstDiv?.querySelector('img') !== null;
+        
+        currentColumnItem.querySelector('.left-column select').value = isImageFirst ? 'left' : 'right';
+        toggleTextOrder(currentColumnItem.querySelector('.left-column select'));
+        
+        const imgDiv = isImageFirst ? columnItem.children[0] : columnItem.children[1];
+        const textDiv = isImageFirst ? columnItem.children[1] : columnItem.children[0];
+        
+        if (imgDiv) {
+            const img = imgDiv.querySelector('img');
+            if (img) {
+                currentColumnItem.querySelector('.url-container input').value = img.getAttribute('src') || '';
+                updateImagePreview(currentColumnItem.querySelector('.url-container input'));
+                
+                const widthMatch = imgDiv.getAttribute('style')?.match(/width:\s*(\d+)%/);
+                if (widthMatch) {
+                    currentColumnItem.querySelector('.width-container select').value = widthMatch[1];
+                }
+                
+                const link = imgDiv.querySelector('a');
+                if (link) {
+                    currentColumnItem.querySelector('.image-link-input').value = link.getAttribute('href') || '';
+                }
+            }
+        }
+        
+        if (textDiv) {
+            const title = textDiv.querySelector('[data-block="title"]');
+            const text = textDiv.querySelector('[data-block="text"]');
+            
+            if (title) {
+                currentColumnItem.querySelector('.right-column input').value = title.textContent || '';
+            }
+            if (text) {
+                currentColumnItem.querySelector('.right-column textarea').value = text.textContent || '';
+            }
+        }
+    });
+    break;
+                
+            case 'single-media':
+                const singleMediaBlock = addBlockDirectly('single-media');
+                const video = element.querySelector('video');
+                
+                if (video) {
+                    const source = video.querySelector('source');
+                    singleMediaBlock.querySelector('.media-type-select').value = 'video';
+                    toggleWidthField(singleMediaBlock.querySelector('.media-type-select'));
+                    
+                    if (source) {
+                        singleMediaBlock.querySelector('.url-container input').value = source.getAttribute('src') || '';
+                    }
+                } else {
+                    const img = element.querySelector('img');
+                    if (img) {
+                        singleMediaBlock.querySelector('.url-container input').value = img.getAttribute('src') || '';
+                        
+                        const imgWidth = img.getAttribute('style')?.match(/width:\s*(\d+)%/);
+                        if (imgWidth && imgWidth[1]) {
+                            singleMediaBlock.querySelector('.width-select').value = imgWidth[1];
+                        }
+                        
+                        const isWide = element.getAttribute('data-view') === 'wide';
+                        singleMediaBlock.querySelector('.checkbox').checked = isWide;
+                        toggleWidthField(singleMediaBlock.querySelector('.checkbox'));
+                        
+                        const link = element.querySelector('a');
+                        if (link) {
+                            singleMediaBlock.querySelector('.image-link-input').value = link.getAttribute('href') || '';
+                        }
+                    }
+                }
+                
+                const title = element.querySelector('[data-block="title"]');
+                const text = element.querySelector('[data-block="text"]');
+                
+                if (title) singleMediaBlock.querySelector('.right-column input').value = title.textContent;
+                if (text) singleMediaBlock.querySelector('.right-column textarea').value = text.textContent;
+                
+                updateImagePreview(singleMediaBlock.querySelector('.url-container input'));
+                break;
+        }
+    } else {
+        
+        addTextBlock(element.outerHTML); // Обработка элементов без data-rich-type как текстовых блоков
+    }
+}
+
+// Добавление блоков
+
+function addBlockDirectly(type) {
+    const container = document.getElementById('blocks-container');
+    const block = document.createElement('div');
+    block.className = 'block';
+    block.dataset.type = type;
+
+    const topContainer = document.createElement('div');
+    topContainer.className = 'block-top-container';
+
+    const blockTitles = {
+        'text': 'Текст',
+        'row-gallery': 'Картинки в ряд',
+        'column-gallery': 'Картинка слева/справа',
+        'single-media': 'Картинка (+во всю ширину)'
+    };
+    const blockTitle = blockTitles[type] || 'Блок';
+
+    const blockInfo = document.createElement('div');
+    blockInfo.className = 'block-info';
+    blockInfo.innerHTML = `
+        <div class="block-number">${container.children.length + 1}</div>
+        <div class="block-title">${blockTitle}</div>
+    `;
+
+    const controls = document.createElement('div');
+    controls.className = 'block-controls';
+    controls.innerHTML = `
+    <button class="block-control-btn info-btn" onclick="showBlockInfo(this)" title="Информация о блоке">
+        <img src="icon/инфо.png" alt="i" class="control-icon">
+    </button>
+        <button class="block-control-btn move-up" onclick="moveBlockUp(this)" title="Переместить вверх">
+            <img src="icon/вверх.png" alt="↑" class="control-icon">
+        </button>
+        <button class="block-control-btn move-down" onclick="moveBlockDown(this)" title="Переместить вниз">
+            <img src="icon/вниз.png" alt="↓" class="control-icon">
+        </button>
+        <button class="block-control-btn delete-btn" onclick="deleteBlock(this)" title="Удалить блок">
+            <img src="icon/крест.png" alt="×" class="control-icon">
+        </button>
+    `;
+
+    topContainer.appendChild(blockInfo);
+    topContainer.appendChild(controls);
+    block.appendChild(topContainer);
+    
+    const contentContainer = document.createElement('div');
+    contentContainer.className = 'block-content';
+
+    switch (type) {
+        case 'text':
+            contentContainer.innerHTML = `
+                <div class="text-controls">
+                    <button class="button-all" onclick="insertHeader(this)" 
+                            data-tooltip="Вставить <p><b>Заголовок</b></p> или обернуть выделенный текст в заголовок">Заголовок</button>
+                    <button class="button-all" onclick="insertParagraph(this)" 
+                            data-tooltip="Вставить теги абзаца <p></p> или обернуть выделенный текст в абзац">Абзац</button>
+                    <button class="button-all" onclick="insertOrderedList(this)" 
+                            data-tooltip="Вставить список с номерами">Нумерованный список</button>
+                    <button class="button-all" onclick="insertUnorderedList(this)" 
+                            data-tooltip="Вставить список с пунтками">Маркированный список</button>
+                    <button class="button-all" onclick="insertGiperURL(this)" 
+                            data-tooltip="Вставить гиперссылку <a href='...'>ссылка</a>">Гиперссылка</button>
+                    <button class="button-all" onclick="makeBold(this)" 
+                            data-tooltip="Обернуть выделенный текст в <b></b>">Полужирный</button>
+                    <button class="button-all" onclick="makeItalic(this)" 
+                            data-tooltip="Обернуть выделенный текст в <i></i>">Курсив</button>
+                </div>
+                <textarea class="text-block" placeholder="Введите текст"></textarea>`;
+            break;
+            
+        case 'row-gallery':
+            contentContainer.innerHTML = `<div class="row-gallery"></div>
+                             <button class="button-all" onclick="addImageRow(this)">+Добавить картинку в ряду</button>`;
+            break;
+            
+        case 'column-gallery':
+            contentContainer.innerHTML = createColumnGalleryBlock();
+            break;
+            
+        case 'single-media':
+            contentContainer.innerHTML = `
+                <div class="single-media-block">
+                    <div class="left-column">
+                        <select class="media-type-select" onchange="toggleWidthField(this)">
+                            <option value="image">Картинка</option>
+                            <option value="video">Видео</option>
+                        </select>
+                        <div class="url-container">
+                            <input type="text" placeholder="URL*" oninput="updateImagePreview(this)" class="required-placeholder">
+                        </div>
+                        <div class="media-controls-container">
+                            <div class="new-container">
+                                <div class="image-preview-container" onclick="openImagePreview(this.querySelector('.image-preview').src)">
+                                    <img class="image-preview" src="" alt="Превью">
+                                </div>
+                                <div class="image-size"></div>
+                            </div>
+                            <div class="controls-column">
+                                <div class="width-and-checkbox-container">
+                                    <div class="width-container">
+                                        <span class="width-label">Ширина картинки</span>
+                                        <select class="width-select">                                
+                                            <option value="10">10%</option>
+                                            <option value="20">20%</option>
+                                            <option value="30">30%</option>
+                                            <option value="40">40%</option>
+                                            <option value="50">50%</option>
+                                            <option value="60">60%</option>
+                                            <option value="70">70%</option>
+                                            <option value="80">80%</option>
+                                            <option value="90">90%</option>
+                                            <option value="100" selected>100% (по умолчанию)</option>
+                                        </select>                        
+                                    </div>
+                                    <label>
+                                        <input type="checkbox" class="checkbox" onchange="toggleWidthField(this)"> Растянуть во всю ширину (необяз.)
+                                    </label>
+                                </div>
+                                <div class="image-link-container">
+                                    <input type="text" placeholder="Гиперссылка на картинке (необязательно) - пока не работает в 1С" class="image-link-input" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right-column">
+                        <input type="text" placeholder="Заголовок под картинкой (необязательно)">
+                        <textarea placeholder="Текст под картинкой (необязательно)"></textarea>
+                    </div>
+                </div>`;
+            break;
+    }
+
+    block.appendChild(contentContainer);
+    container.appendChild(block);
+    
+    return block;
+}
+
+// Добавляет текстовый блок с заданным содержимым
+function addTextBlock(content) {
+    const textBlock = addBlockDirectly('text');
+    // Очищаем лишние пробелы и переносы, но сохраняем все теги
+    textBlock.querySelector('textarea').value = content.trim();
+}
 
 
     // Обработчик для таба "Предпросмотр веб"
@@ -127,151 +488,7 @@ function showBlockInfo(button) {
 
 
 // Функции для работы с блоками
-
-function addBlock(type) {
-    const container = document.getElementById('blocks-container');
-    const block = document.createElement('div');
-    block.className = 'block';
-    block.dataset.type = type;
-
-    const topContainer = document.createElement('div');
-    topContainer.className = 'block-top-container';
-
-    const blockTitles = {
-        'text': 'Текст',
-        'row-gallery': 'Картинки в ряд',
-        'column-gallery': 'Картинка слева/справа',
-        'single-media': 'Картинка (+во всю ширину)'
-    };
-    const blockTitle = blockTitles[type] || 'Блок';
-
-    // Контейнер для информации о блоке (номер + название)
-    const blockInfo = document.createElement('div');
-    blockInfo.className = 'block-info';
-    blockInfo.innerHTML = `
-        <div class="block-number">${container.children.length + 1}</div>
-        <div class="block-title">${blockTitle}</div>
-    `;
-
-    // Кнопки управления с иконками
-    const controls = document.createElement('div');
-    controls.className = 'block-controls';
-    controls.innerHTML = `
-	<button class="block-control-btn info-btn" onclick="showBlockInfo(this)" title="Информация о блоке">
-        <img src="icon/инфо.png" alt="i" class="control-icon">
-    </button>
-        <button class="block-control-btn move-up" onclick="moveBlockUp(this)" title="Переместить вверх">
-            <img src="icon/вверх.png" alt="↑" class="control-icon">
-        </button>
-        <button class="block-control-btn move-down" onclick="moveBlockDown(this)" title="Переместить вниз">
-            <img src="icon/вниз.png" alt="↓" class="control-icon">
-        </button>
-        <button class="block-control-btn delete-btn" onclick="deleteBlock(this)" title="Удалить блок">
-            <img src="icon/крест.png" alt="×" class="control-icon">
-        </button>
-    `;
-
-    topContainer.appendChild(blockInfo);
-    topContainer.appendChild(controls);
-    block.appendChild(topContainer);
-	
-	const contentContainer = document.createElement('div');
-    contentContainer.className = 'block-content';
-
-    // Добавляем содержимое блока в зависимости от типа
-    switch (type) {
-        case 'text':
-  contentContainer.innerHTML = `
-    <div class="text-controls">
-      <button class="button-all" onclick="insertHeader(this)" 
-              data-tooltip="Вставить <p><b>Заголовок</b></p> или обернуть выделенный текст в заголовок">Заголовок</button>
-      
-      <button class="button-all" onclick="insertParagraph(this)" 
-              data-tooltip="Вставить теги абзаца <p></p> или обернуть выделенный текст в абзац">Абзац</button>
-      
-      <button class="button-all" onclick="insertOrderedList(this)" 
-              data-tooltip="Вставить список с номерами">Нумерованный список</button>
-      
-      <button class="button-all" onclick="insertUnorderedList(this)" 
-              data-tooltip="Вставить список с пунтками">Маркированный список</button>
-      
-      <button class="button-all" onclick="insertGiperURL(this)" 
-              data-tooltip="Вставить гиперссылку <a href='...'>ссылка</a>">Гиперссылка</button>
-      
-      <button class="button-all" onclick="makeBold(this)" 
-              data-tooltip="Обернуть выделенный текст в <b></b>">Полужирный</button>
-      
-      <button class="button-all" onclick="makeItalic(this)" 
-              data-tooltip="Обернуть выделенный текст в <i></i>">Курсив</button>
-    </div>
-    <textarea class="text-block" placeholder="Введите текст"></textarea>`;
-  break;
-            
-        case 'row-gallery':
-            contentContainer.innerHTML += `<div class="row-gallery"></div>
-                             <button class="button-all" onclick="addImageRow(this)">+Добавить картинку в ряду</button>`;
-            break;
-            
-        case 'column-gallery':
-            contentContainer.innerHTML += createColumnGalleryBlock();
-            break;
-            
-        case 'single-media':
-            contentContainer.innerHTML += `
-                <div class="single-media-block">
-                    <div class="left-column">
-                        <select class="media-type-select" onchange="toggleWidthField(this)">
-                            <option value="image">Картинка</option>
-                            <option value="video">Видео</option>
-                        </select>
-                        <div class="url-container">
-                            <input type="text" placeholder="URL*" oninput="updateImagePreview(this)" class="required-placeholder">
-                        </div>
-                        <div class="media-controls-container">
-                            <div class="new-container">
-                                <div class="image-preview-container" onclick="openImagePreview(this.querySelector('.image-preview').src)">
-                                    <img class="image-preview" src="" alt="Превью">
-                                </div>
-                                <div class="image-size"></div>
-                            </div>
-                            <div class="controls-column">
-                                <div class="width-and-checkbox-container">
-                                    <div class="width-container">
-                                        <span class="width-label">Ширина картинки</span>
-                                        <select class="width-select">                                
-                                            <option value="10">10%</option>
-                                            <option value="20">20%</option>
-                                            <option value="30">30%</option>
-                                            <option value="40">40%</option>
-                                            <option value="50">50%</option>
-                                            <option value="60">60%</option>
-                                            <option value="70">70%</option>
-                                            <option value="80">80%</option>
-                                            <option value="90">90%</option>
-                                            <option value="100" selected>100% (по умолчанию)</option>
-                                        </select>                        
-                                    </div>
-                                    <label>
-                                        <input type="checkbox" class="checkbox" onchange="toggleWidthField(this)"> Растянуть во всю ширину (необяз.)
-                                    </label>
-                                </div>
-                                <div class="image-link-container">
-                                    <input type="text" placeholder="Гиперссылка на картинке (необязательнотельно) - пока не работает в 1С" class="image-link-input" disabled>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="right-column">
-                        <input type="text" placeholder="Заголовок под картинкой (необязательно)">
-                        <textarea placeholder="Текст под картинкой (необязательно)"></textarea>
-                    </div>
-                </div>`;
-            break;
-    }
-
-    block.appendChild(contentContainer);
-    container.appendChild(block);
-}
+ 
 
 // Обновляем функцию moveBlockUp для обновления номеров
 function moveBlockUp(button) {
@@ -860,60 +1077,55 @@ document.getElementById('copy-btn').addEventListener('click', function() {
 // Функции для работы с изображениями
 
 function updateImagePreview(input) {
-
     const urlContainer = input.closest('.url-container');
-    if (!urlContainer) {
-        console.error('Не найден .url-container');
-        return;
-    }
+    if (!urlContainer) return;
+
+    // Проверяем, находимся ли мы в блоке single-media
+    const isSingleMediaBlock = input.closest('.single-media-block');
+    const isVideoType = isSingleMediaBlock && 
+                       isSingleMediaBlock.querySelector('.media-type-select')?.value === 'video';
 
     let previewContainer, imageSizeElement;
-
-
     const mediaControlsContainer = urlContainer.nextElementSibling;
-    if (mediaControlsContainer && mediaControlsContainer.classList.contains('media-controls-container')) {
 
+    if (mediaControlsContainer?.classList.contains('media-controls-container')) {
         previewContainer = mediaControlsContainer.querySelector('.image-preview-container');
         imageSizeElement = mediaControlsContainer.querySelector('.image-size');
     } else {
-
         previewContainer = urlContainer.nextElementSibling;
-        if (previewContainer && previewContainer.classList.contains('image-preview-container')) {
+        if (previewContainer?.classList.contains('image-preview-container')) {
             imageSizeElement = previewContainer.nextElementSibling;
         }
     }
 
-
-    if (!previewContainer || !previewContainer.classList.contains('image-preview-container')) {
-        console.error('Не найден .image-preview-container');
-        return;
-    }
+    if (!previewContainer || !imageSizeElement) return;
 
     const preview = previewContainer.querySelector('.image-preview');
-    if (!preview) {
-        console.error('Не найдено .image-preview');
-        return;
-    }
+    if (!preview) return;
 
-    if (!imageSizeElement || !imageSizeElement.classList.contains('image-size')) {
-        console.error('Не найден .image-size');
-        return;
-    }
-
-    // Получаем URL из поля ввода
     const url = input.value.trim();
+
+    // Если это видео в single-media блоке - скрываем превью и не проверяем
+    if (isVideoType) {
+        preview.style.display = 'none';
+        imageSizeElement.textContent = 'Для видео превью недоступно';
+        return;
+    }
+
     if (url) {
         const img = new Image();
         img.src = url;
-        img.onload = function () {
+        img.onload = function() {
             preview.src = url;
             preview.style.display = 'block';
             imageSizeElement.textContent = `Размер: ${img.naturalWidth}x${img.naturalHeight} px`;
         };
-        img.onerror = function () {
+        img.onerror = function() {
             preview.style.display = 'none';
             imageSizeElement.textContent = '';
-            alert('Не удалось загрузить изображение.');
+            if (!isVideoType) { // Не показываем алерт для видео
+                alert('Не удалось загрузить изображение.');
+            }
         };
     } else {
         preview.style.display = 'none';
@@ -947,15 +1159,6 @@ function openImagePreview(url) {
     previewedImage.onerror = function () {
         alert('Не удалось загрузить изображение.');
     };
-}
-
-function closeModal(modalId, overlayId) {
-    const modal = document.getElementById(modalId);
-    const overlay = document.getElementById(overlayId);
-    if (modal && overlay) { // Проверка на существование элементов
-        modal.style.display = 'none';
-        overlay.style.display = 'none';
-    }
 }
 
 // Функции для работы с табами
@@ -1038,7 +1241,7 @@ document.getElementById('block-type').addEventListener('change', function() {
 
 document.getElementById('confirm-block-type').addEventListener('click', function() {
     const blockType = document.getElementById('block-type').value;
-    addBlock(blockType);
+    addBlockDirectly(blockType);
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('modal').style.display = 'none';
 });
