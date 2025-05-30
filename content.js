@@ -127,8 +127,14 @@ function processElement(element) {
                             const lastImageBlock = imageBlocks[imageBlocks.length - 1];
                             
                             lastImageBlock.querySelector('.url-container input').value = img.getAttribute('src') || '';
-                            if (title) lastImageBlock.querySelectorAll('input[type="text"]')[1].value = title.textContent;
-                            if (text) lastImageBlock.querySelector('textarea').value = text.textContent;
+                            
+                            if (title) {
+                                lastImageBlock.querySelectorAll('input[type="text"]')[1].value = title.innerHTML;
+                            }
+                            if (text) {
+                                lastImageBlock.querySelector('textarea').value = text.innerHTML;
+                            }
+                            
                             if (link) lastImageBlock.querySelector('.image-link-input').value = link.getAttribute('href') || '';
                             
                             updateImagePreview(lastImageBlock.querySelector('.url-container input'));
@@ -137,60 +143,59 @@ function processElement(element) {
                 }
                 break;
                 
-            case 'column-gallery':
-    const columnGalleryBlock = addBlockDirectly('column-gallery');
-    
-    Array.from(element.children).forEach((columnItem, index) => {
-
-        if (index > 0) {
-            columnGalleryBlock.querySelector('.button-add-colum-image').click();
-        }
-        
-        const columnItems = columnGalleryBlock.querySelectorAll('.column-item');
-        const currentColumnItem = columnItems[index];
-        
-        const firstDiv = columnItem.children[0];
-        const isImageFirst = firstDiv?.querySelector('img') !== null;
-        
-        currentColumnItem.querySelector('.left-column select').value = isImageFirst ? 'left' : 'right';
-        toggleTextOrder(currentColumnItem.querySelector('.left-column select'));
-        
-        const imgDiv = isImageFirst ? columnItem.children[0] : columnItem.children[1];
-        const textDiv = isImageFirst ? columnItem.children[1] : columnItem.children[0];
-        
-        if (imgDiv) {
-            const img = imgDiv.querySelector('img');
-            if (img) {
-                currentColumnItem.querySelector('.url-container input').value = img.getAttribute('src') || '';
-                updateImagePreview(currentColumnItem.querySelector('.url-container input'));
+           case 'column-gallery':
+                const columnGalleryBlock = addBlockDirectly('column-gallery');
                 
-                const widthMatch = imgDiv.getAttribute('style')?.match(/width:\s*(\d+)%/);
-                if (widthMatch) {
-                    currentColumnItem.querySelector('.width-container select').value = widthMatch[1];
-                }
+                Array.from(element.children).forEach((columnItem, index) => {
+                    if (index > 0) {
+                        columnGalleryBlock.querySelector('.button-add-colum-image').click();
+                    }
+                    
+                    const columnItems = columnGalleryBlock.querySelectorAll('.column-item');
+                    const currentColumnItem = columnItems[index];
+                    
+                    const firstDiv = columnItem.children[0];
+                    const isImageFirst = firstDiv?.querySelector('img') !== null;
+                    
+                    currentColumnItem.querySelector('.left-column select').value = isImageFirst ? 'left' : 'right';
+                    toggleTextOrder(currentColumnItem.querySelector('.left-column select'));
+                    
+                    const imgDiv = isImageFirst ? columnItem.children[0] : columnItem.children[1];
+                    const textDiv = isImageFirst ? columnItem.children[1] : columnItem.children[0];
+                    
+                    if (imgDiv) {
+                        const img = imgDiv.querySelector('img');
+                        if (img) {
+                            currentColumnItem.querySelector('.url-container input').value = img.getAttribute('src') || '';
+                            updateImagePreview(currentColumnItem.querySelector('.url-container input'));
+                            
+                            const widthMatch = imgDiv.getAttribute('style')?.match(/width:\s*(\d+)%/);
+                            if (widthMatch) {
+                                currentColumnItem.querySelector('.width-container select').value = widthMatch[1];
+                            }
+                            
+                            const link = imgDiv.querySelector('a');
+                            if (link) {
+                                currentColumnItem.querySelector('.image-link-input').value = link.getAttribute('href') || '';
+                            }
+                        }
+                    }
+                    
+                    if (textDiv) {
+                        const title = textDiv.querySelector('[data-block="title"]');
+                        const text = textDiv.querySelector('[data-block="text"]');
+                        
+                        if (title) {
+                            currentColumnItem.querySelector('.right-column input').value = title.innerHTML;
+                        }
+                        if (text) {
+                            currentColumnItem.querySelector('.right-column textarea').value = text.innerHTML;
+                        }
+                    }
+                });
+                break;
                 
-                const link = imgDiv.querySelector('a');
-                if (link) {
-                    currentColumnItem.querySelector('.image-link-input').value = link.getAttribute('href') || '';
-                }
-            }
-        }
-        
-        if (textDiv) {
-            const title = textDiv.querySelector('[data-block="title"]');
-            const text = textDiv.querySelector('[data-block="text"]');
-            
-            if (title) {
-                currentColumnItem.querySelector('.right-column input').value = title.textContent || '';
-            }
-            if (text) {
-                currentColumnItem.querySelector('.right-column textarea').value = text.textContent || '';
-            }
-        }
-    });
-    break;
-                
-            case 'single-media':
+           case 'single-media':
                 const singleMediaBlock = addBlockDirectly('single-media');
                 const video = element.querySelector('video');
                 
@@ -226,8 +231,12 @@ function processElement(element) {
                 const title = element.querySelector('[data-block="title"]');
                 const text = element.querySelector('[data-block="text"]');
                 
-                if (title) singleMediaBlock.querySelector('.right-column input').value = title.textContent;
-                if (text) singleMediaBlock.querySelector('.right-column textarea').value = text.textContent;
+                if (title) {
+                    singleMediaBlock.querySelector('.right-column input').value = title.innerHTML;
+                }
+                if (text) {
+                    singleMediaBlock.querySelector('.right-column textarea').value = text.innerHTML;
+                }
                 
                 updateImagePreview(singleMediaBlock.querySelector('.url-container input'));
                 break;
