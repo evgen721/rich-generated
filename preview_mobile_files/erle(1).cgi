@@ -5,11 +5,11 @@ var A = self['DSPCounter' || 'AdriverCounterJS'],
 	a = A(ph);
 a.reply = {
 ph:ph,
-rnd:'404083',
+rnd:'702',
 bt:62,
 sid:227790,
 pz:0,
-sz:'',
+sz:'%2f',
 bn:0,
 sliceid:0,
 netid:0,
@@ -18,18 +18,18 @@ tns:0,
 pass:'',
 adid:0,
 bid:2864425,
-geoid:81,
-cgihref:'//ad.adriver.ru/cgi-bin/click.cgi?sid=227790&ad=0&bid=2864425&bt=62&bn=0&pz=0&xpid=D7kxFmgHkj7eiWrv80e1sCEPDOHDnVMtqVc0nmi2cdjaQxQziKAZ86uPkzQw1ycluBf-Sq3jjYo9Jy0U4XdIVD_0LYQ&ref=&custom=128%3D437.10000002384186%3B129%3D1.9.4%3B153%3Duser_id%3B157%3Dclient_id%3B158%3Dany_id%3B206%3DDSPCounter',
+geoid:14,
+cgihref:'//ad.adriver.ru/cgi-bin/click.cgi?sid=227790&ad=0&bid=2864425&bt=62&bn=0&pz=0&xpid=DmJfvkJsPnUqFb84kTsZXIsYxq1kWJjj5JFymkKei87f9rECJ8I949_A0gqJjuCNgYF1tEZcc1lY4RyP_9TvRLI9hHA&ref=https:%2f%2fwww.sima%2dland.ru%2f&custom=128%3D846.4000000953674%3B129%3D1.9.8%3B153%3Duser_id%3B157%3Dclient_id%3B158%3Dany_id%3B206%3DDSPCounter',
 target:'_blank',
 width:'0',
 height:'0',
 alt:'AdRiver',
-mirror:A.httplize('//mh8.adriver.ru'), 
+mirror:A.httplize('//mlb3.adriver.ru'), 
 comp0:'0/script.js',
-custom:{"128":"437.10000002384186","129":"1.9.4","153":"user_id","157":"client_id","158":"any_id","206":"DSPCounter"},
+custom:{"128":"846.4000000953674","129":"1.9.8","153":"user_id","157":"client_id","158":"any_id","206":"DSPCounter"},
 cid:'A_nKubd7Mi_C5iothSG_9Kw',
 uid:1596028084677,
-xpid:'D7kxFmgHkj7eiWrv80e1sCEPDOHDnVMtqVc0nmi2cdjaQxQziKAZ86uPkzQw1ycluBf-Sq3jjYo9Jy0U4XdIVD_0LYQ'
+xpid:'DmJfvkJsPnUqFb84kTsZXIsYxq1kWJjj5JFymkKei87f9rECJ8I949_A0gqJjuCNgYF1tEZcc1lY4RyP_9TvRLI9hHA'
 }
 var r = a.reply;
 
@@ -57,12 +57,10 @@ if (r.comp0 == "script.js" && r.adid){
 		if (d.body){return i = mI(u, oL)}
 		if(y--){setTimeout(function(){st(u, oL)}, 100)}
 	}
-	st(o.hl('https://content.adriver.ru/banners/0002186/0002186173/0/s.html?0&0&0&0&404083&0&1596028084677&81&176.15.252.217&javascript&' + (o.all || 0)), oL);
+	st(o.hl('https://content.adriver.ru/banners/0002186/0002186173/0/s.html?0&0&0&0&702&0&1596028084677&14&213.139.250.41&javascript&' + (o.all || 0)), oL);
 }({
 	hl: function httplize(s){return ((/^\/\//).test(s) ? ((location.protocol == 'https:')?'https:':'http:') : '') + s},
         
-	
-	all: 1
 	
 }));
 }catch(e){} 

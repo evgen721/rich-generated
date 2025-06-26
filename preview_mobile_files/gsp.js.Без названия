@@ -1,5 +1,5 @@
 
-  var gs_landing_params = {"mode":"card","offers":[{"id":"4472179","price":349}],"cat_id":null,"order_id":null,"mid":105470,"user_id":"dd79151f-43ab-427f-a192-50070e18fbbe","url":"https:\u002F\u002Fwww.sima-land.ru\u002F4472179\u002Ftarelka-dolyana-vanil-d-27-cm-keramika-seraya\u002F?sort=price","query":{"mode":"card","mid":"105470","order_id":"","cat_id":"","codes":"4472179:349","deduplication":"gdeslon","muid":"563722","perf":"1252","gs_uid":"dd79151f-43ab-427f-a192-50070e18fbbe","_t":"1748342874537","source":"https:\u002F\u002Fwww.sima-land.ru\u002F4472179\u002Ftarelka-dolyana-vanil-d-27-cm-keramika-seraya\u002F?sort=price"}};
+  var gs_landing_params = {"mode":"card","offers":[{"id":"4472179","price":349}],"cat_id":null,"order_id":null,"mid":105470,"user_id":"dd79151f-43ab-427f-a192-50070e18fbbe","url":"https:\u002F\u002Fwww.sima-land.ru\u002F4472179\u002Ftarelka-dolyana-vanil-d-27-cm-keramika-seraya\u002F?f=%7B%22category_tree%22%3A%5B%22690%22%5D%7D&per-page=20&q=%D1%81%D0%BA%D0%BE%D1%82%D1%87&sort=rank&viewtype=list","query":{"mode":"card","mid":"105470","order_id":"","cat_id":"","codes":"4472179:349","deduplication":"gdeslon","muid":"563722","perf":"693","gs_uid":"dd79151f-43ab-427f-a192-50070e18fbbe","_t":"1750914869894","source":"https:\u002F\u002Fwww.sima-land.ru\u002F4472179\u002Ftarelka-dolyana-vanil-d-27-cm-keramika-seraya\u002F?f=%7B%22category_tree%22%3A%5B%22690%22%5D%7D&per-page=20&q=%D1%81%D0%BA%D0%BE%D1%82%D1%87&sort=rank&viewtype=list"}};
 
 
 ;(function () {
@@ -184,8 +184,6 @@ function writeCookieIfEmpty(name, value) {
         var retargets = [
           
             "<script src=\"//tbackloop.com/pxl \" async></script>",
-          
-            "<script async src=\"https://8ctch.com/analytics.js\"></script>",
           
         ];
 
