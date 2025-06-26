@@ -368,7 +368,7 @@ function addBlockDirectly(type) {
                                     </label>
                                 </div>
                                 <div class="image-link-container">
-                                    <input type="text" placeholder="Гиперссылка на картинке (необязательно) - пока не работает в 1С" class="image-link-input" disabled>
+                                    <input type="text" placeholder="Гиперссылка на картинке (необязательно) - пока не работает в 1С" class="image-link-input">
                                 </div>
                             </div>
                         </div>
@@ -598,7 +598,7 @@ function createColumnItemHTML() {
                     </div> 
 					
                     <div class="image-link-container">
-                        <input type="text" placeholder="Гиперссылка на картинке (необязательно) - пока не работает в 1С" class="image-link-input" disabled>
+                        <input type="text" placeholder="Гиперссылка на картинке (необязательно) - пока не работает в 1С" class="image-link-input">
                     </div>	
 </div>					
                 </div>				
@@ -676,7 +676,7 @@ function addImageRow(button) {
         <div class="image-size"></div>
         <input type="text" placeholder="Заголовок под картинкой (необяз.)">
         <textarea placeholder="Текст под картинкой (необяз.)"></textarea>
-        <input type="text" placeholder="Гиперссылка на картинке (необяз.) - пока не работает в 1С" class="image-link-input" disabled>
+        <input type="text" placeholder="Гиперссылка на картинке (необяз.) - пока не работает в 1С" class="image-link-input">
                                 
     `;
     gallery.appendChild(imageBlock);
